@@ -1,0 +1,2065 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<title>ARISE PET</title>
+<link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&family=Orbitron:wght@400;500;700&family=Noto+Sans+KR:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+:root{--void:#050510;--p:rgba(10,24,60,0.8);--p2:rgba(8,18,48,0.95);--gl:#3a8fff;--gl2:#2070e0;--gl3:#60b0ff;--gb:rgba(58,143,255,0.3);--t:#c0d8f8;--t2:#7a9cc8;--t3:#4a6a90;--w:#e8f0ff;--gd:#f0c848;--gd2:#c8a030;--r:#ff4050;--g:#40e878;--pr:#b070ff;--ti:'Orbitron',sans-serif;--ui:'Rajdhani',sans-serif;--kr:'Noto Sans KR',sans-serif;}
+*{margin:0;padding:0;box-sizing:border-box}html,body{height:100%;overflow:hidden;touch-action:manipulation}
+body{background:var(--void);color:var(--t);font-family:var(--ui);font-weight:500;display:flex;align-items:center;justify-content:center}
+
+.sh{width:400px;max-width:100vw;height:100%;max-height:780px;display:flex;flex-direction:column;background:var(--p2);border:1px solid var(--gb);border-radius:12px;overflow:hidden;position:relative}
+
+/* TOP */
+.top{padding:8px 12px;border-bottom:1px solid rgba(58,143,255,0.12);flex-shrink:0;display:flex;align-items:center;gap:6px}
+.t-rk{font-family:var(--ti);font-size:9px;letter-spacing:1px;color:var(--gd);padding:2px 8px;border:1px solid var(--gd2);transition:all 0.4s}
+.t-nm{font-family:var(--ti);font-size:10px;color:var(--w);letter-spacing:2px}
+.t-lv{font-family:var(--ti);font-size:8px;color:var(--t3);letter-spacing:1px;margin-left:auto}
+.t-gd{font-family:var(--ti);font-size:9px;color:var(--gd);letter-spacing:1px}
+.t-day{font-family:var(--ti);font-size:8px;color:var(--t3);margin-left:8px}
+
+/* STATS */
+.sts{padding:6px 12px;display:flex;flex-direction:column;gap:3px;flex-shrink:0;border-bottom:1px solid rgba(58,143,255,0.06)}
+.sb{display:flex;align-items:center;gap:5px}
+.sb label{width:68px;font-size:10px;color:var(--t3)}
+.sb .tk{flex:1;height:5px;background:rgba(255,255,255,0.04);border-radius:1px;overflow:hidden}
+.sb .fl{height:100%;border-radius:1px;transition:width 0.5s}
+.sb .vl{font-family:var(--ti);font-size:8px;width:24px;text-align:right}
+
+/* VIEWPORT */
+.vp{flex:1;position:relative;overflow:hidden;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:4px;transition:background 1s}
+.vp.day{background:linear-gradient(180deg,#0a1028,#101838 50%,#0c1230)}
+.vp.night{background:linear-gradient(180deg,#030308,#060612 50%,#040310)}
+.vp canvas{image-rendering:pixelated;image-rendering:crisp-edges}
+img{image-rendering:pixelated;image-rendering:crisp-edges}
+#pet{width:192px;height:256px;transition:transform 0.15s;position:relative;z-index:2}
+#sushi{width:64px;height:64px;position:absolute;bottom:calc(50% - 80px);right:calc(50% - 130px);z-index:3}
+.shw{width:90px;height:10px;background:radial-gradient(ellipse,rgba(0,0,0,0.35),transparent 70%);z-index:1;margin-top:-2px}
+.mood{font-family:var(--ti);font-size:7px;letter-spacing:2px;color:var(--t3);transition:color 0.3s;z-index:2}
+.emo{position:absolute;pointer-events:none;font-size:22px;z-index:10;animation:ef 1.3s ease-out forwards}
+@keyframes ef{0%{opacity:1;transform:translateY(0) scale(1)}50%{opacity:1}100%{opacity:0;transform:translateY(-70px) scale(0.5)}}
+.star{position:absolute;width:2px;height:2px;background:#fff;border-radius:50%;opacity:0.12;animation:tw var(--d) ease-in-out infinite;z-index:0}
+@keyframes tw{0%,100%{opacity:0.06}50%{opacity:0.3}}
+.ef{position:absolute;inset:0;pointer-events:none;z-index:8;overflow:hidden}
+
+/* EVENT BANNER */
+.evb{position:absolute;top:8px;left:50%;transform:translateX(-50%);z-index:12;background:var(--p);border:1px solid var(--gb);padding:6px 14px;font-family:var(--ti);font-size:8px;letter-spacing:2px;color:var(--gl3);max-width:90%;text-align:center;opacity:0;transition:opacity 0.4s;pointer-events:none}
+.evb.show{opacity:1}
+
+/* LOG */
+.lg{height:52px;overflow-y:auto;padding:4px 12px;background:rgba(0,0,0,0.35);border-top:1px solid rgba(58,143,255,0.05);flex-shrink:0;scrollbar-width:thin;scrollbar-color:var(--t3) transparent}
+.lg p{font-size:10px;line-height:1.3;margin-bottom:2px}.lg .s{color:var(--gl3);font-family:var(--ti);font-size:8px;letter-spacing:1px}.lg .g{color:var(--g)}.lg .b{color:var(--r)}.lg .go{color:var(--gd)}.lg .l{color:var(--t3);font-style:italic}
+
+/* ACTIONS */
+.ac{display:grid;grid-template-columns:repeat(4,1fr);gap:2px;padding:6px 6px 2px;flex-shrink:0;background:var(--p2);border-top:1px solid var(--gb)}
+.ac2{display:grid;grid-template-columns:repeat(4,1fr);gap:2px;padding:2px 6px 6px;flex-shrink:0;background:var(--p2)}
+.ab{font-family:var(--ui);font-weight:600;font-size:11px;padding:8px 2px;background:rgba(58,143,255,0.05);color:var(--t);border:1px solid rgba(58,143,255,0.12);cursor:pointer;transition:all 0.1s;display:flex;flex-direction:column;align-items:center;gap:1px}
+.ab:hover:not(:disabled){background:rgba(58,143,255,0.1);border-color:var(--gb)}.ab:active:not(:disabled){transform:scale(0.94)}.ab:disabled{opacity:0.15;cursor:default}
+.ab .i{font-size:16px}.ab .n{font-size:9px}.ab .su{font-family:var(--ti);font-size:6px;color:var(--t3);letter-spacing:0.5px}
+
+/* EVO OVERLAY */
+.evo{position:absolute;inset:0;z-index:25;background:rgba(5,5,16,0.97);display:none;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:20px}
+.evo.show{display:flex;animation:fi 0.5s ease}
+@keyframes fi{from{opacity:0}to{opacity:1}}
+.evo .kr{font-family:var(--kr);font-size:10px;color:var(--t3);font-weight:300;letter-spacing:2px;margin-bottom:6px}
+.evo h2{font-family:var(--ti);font-size:13px;letter-spacing:4px;color:var(--gd);text-shadow:0 0 15px rgba(240,200,72,0.3);margin-bottom:10px}
+.evo canvas{image-rendering:pixelated;image-rendering:crisp-edges;margin:8px 0}
+.evo p{font-size:12px;color:var(--t2);line-height:1.6;max-width:300px;margin-bottom:6px}
+.evo .btn{font-family:var(--ti);font-size:9px;letter-spacing:3px;padding:10px 28px;background:none;color:var(--gd);border:1px solid var(--gd2);cursor:pointer;margin-top:6px;transition:all 0.2s}
+.evo .btn:hover{background:rgba(240,200,72,0.06)}
+
+/* ACHIEVEMENTS */
+.ach{position:absolute;bottom:60px;left:50%;transform:translateX(-50%);z-index:15;background:var(--p);border:1px solid var(--gd2);padding:8px 16px;font-family:var(--ti);font-size:8px;letter-spacing:2px;color:var(--gd);opacity:0;transition:opacity 0.4s;pointer-events:none;text-align:center;max-width:85%}
+.ach.show{opacity:1}
+
+@media(max-width:420px){.sh{border-radius:0;max-height:100%}#pet{width:144px;height:192px}.ab{padding:6px 2px;font-size:10px}}
+
+/* Quest items */
+.qi{display:flex;align-items:flex-start;gap:8px;padding:8px 10px;margin-bottom:4px;background:rgba(58,143,255,0.04);border:1px solid rgba(58,143,255,0.1);border-radius:2px;font-size:11px;line-height:1.4}
+.qi.done{opacity:0.35;border-color:rgba(64,232,120,0.15)}.qi.done .qn{text-decoration:line-through}
+.qi.locked{opacity:0.25}.qi .qn{color:var(--t)}.qi .qd{font-size:9px;color:var(--t3);margin-top:2px}
+.qi .qk{width:14px;height:14px;border:1px solid var(--gb);flex-shrink:0;margin-top:1px;display:flex;align-items:center;justify-content:center;font-size:8px}
+.qi.done .qk{border-color:var(--g);color:var(--g)}.qi.done .qk::after{content:'✓'}
+.spend-entry{font-size:9px;padding:2px 0;color:var(--t3);border-bottom:1px solid rgba(58,143,255,0.05)}
+.spend-entry b{color:var(--r)}
+.spend-entry.good b{color:var(--g)}
+</style>
+</head>
+<body>
+<div class="sh">
+  <div class="evb" id="evb"></div>
+  <div class="ach" id="ach"></div>
+  <div class="top">
+    <div class="t-rk" id="rk">E</div>
+    <div class="t-nm">SIR BAP</div>
+    <div class="t-lv" id="lv">LV 1</div>
+    <div class="t-gd" id="gd">400G</div>
+    <div class="t-day" id="dy">DAY 1</div>
+  </div>
+  <div style="padding:4px 12px;display:flex;align-items:center;gap:6px;border-bottom:1px solid rgba(58,143,255,0.06);flex-shrink:0;cursor:pointer" onclick="openClassInfo()">
+    <span style="font-size:14px" id="classIcon">⚒</span>
+    <span style="font-family:var(--ti);font-size:8px;letter-spacing:1px;color:var(--gl3)" id="className">LOST ARTISAN</span>
+    <span style="font-size:9px;color:var(--t3);margin-left:auto" id="classAlign">Chaotic Creative</span>
+    <span style="font-size:8px;color:var(--t3)">▸</span>
+  </div>
+  <div class="sts">
+    <div class="sb"><label>Discipline</label><div class="tk"><div class="fl" id="dB" style="width:8%"></div></div><div class="vl" id="dV">8</div></div>
+    <div class="sb"><label>Energy</label><div class="tk"><div class="fl" id="eB" style="width:60%"></div></div><div class="vl" id="eV">60</div></div>
+    <div class="sb"><label>Focus</label><div class="tk"><div class="fl" id="fB" style="width:18%"></div></div><div class="vl" id="fV">18</div></div>
+    <div class="sb"><label>Sales</label><div class="tk"><div class="fl" id="sB" style="width:92%"></div></div><div class="vl" id="sV">92</div></div>
+    <div class="sb"><label>Happiness</label><div class="tk"><div class="fl" id="hB" style="width:50%"></div></div><div class="vl" id="hV">50</div></div>
+    <div class="sb"><label>XP</label><div class="tk"><div class="fl" id="xB" style="width:0%;background:var(--gl3)"></div></div><div class="vl" id="xV" style="color:var(--gl3)">0</div></div>
+  </div>
+  <div class="vp day" id="vp">
+    <canvas id="sushi" width="8" height="8"></canvas>
+    <canvas id="pet" width="24" height="32"></canvas>
+    <div class="shw"></div>
+    <div class="mood" id="md">IDLE</div>
+    <div class="ef" id="ef"></div>
+  </div>
+  <div class="lg" id="lg"></div>
+  <div id="streakInd" style="font-family:var(--ti);font-size:9px;letter-spacing:1px;text-align:center;color:var(--gd);padding:2px 0;min-height:14px"></div>
+  <div class="ac">
+    <button class="ab" onclick="A('sleep')"><span class="i">😴</span><span class="n">Sleep</span><span class="su">+NRG +DISC</span></button>
+    <button class="ab" onclick="A('save')"><span class="i">🏦</span><span class="n">Save</span><span class="su">+DISC +GOLD</span></button>
+    <button class="ab" onclick="A('market')"><span class="i">📣</span><span class="n">Market</span><span class="su">+FOCUS</span></button>
+    <button class="ab" onclick="A('sell')"><span class="i">🤝</span><span class="n">Sell</span><span class="su">+GOLD +SAL</span></button>
+  </div>
+  <div class="ac2">
+    <button class="ab" onclick="A('train')"><span class="i">⚔️</span><span class="n">Train</span><span class="su">+ALL -NRG</span></button>
+    <button class="ab" onclick="A('build')"><span class="i">🔨</span><span class="n">Build</span><span class="su">+HAP -FOC</span></button>
+    <button class="ab" onclick="A('date')"><span class="i">💕</span><span class="n">Date</span><span class="su">+HAP +NRG</span></button>
+    <button class="ab" onclick="openSpendLog()"><span class="i">💸</span><span class="n">Log $</span><span class="su">LOG SPENDING</span></button>
+  </div>
+  <div class="ac2" style="grid-template-columns:repeat(4,1fr)">
+    <button class="ab" id="workoutBtn" onclick="A('workout')"><span class="i">💪</span><span class="n">Workout</span><span class="su">LOCKED 2 DAYS</span></button>
+    <button class="ab" onclick="A('blow')"><span class="i">🎰</span><span class="n">Blow $</span><span class="su">+HAP -GOLD -DISC</span></button>
+    <button class="ab" id="budgetBtn" onclick="A('budget')"><span class="i">📋</span><span class="n">Budget</span><span class="su">+DISC +FOC</span></button>
+    <button class="ab" onclick="openQuestLog()"><span class="i">📜</span><span class="n">Quests</span><span class="su">VIEW PROGRESS</span></button>
+  </div>
+
+  <!-- SPENDING LOG OVERLAY -->
+  <div class="evo" id="spendScr">
+    <div class="kr">지출 기록</div>
+    <h2>LOG SPENDING</h2>
+    <p>How much did you spend today on non-essentials? (takeaway, MTG, gear, nights out, impulse buys)</p>
+    <div style="display:flex;gap:6px;align-items:center;margin:10px 0;">
+      <span style="font-family:var(--ti);font-size:14px;color:var(--gd)">$</span>
+      <input type="number" id="spendAmt" placeholder="0" min="0" style="width:120px;padding:8px 12px;background:rgba(58,143,255,0.08);border:1px solid var(--gb);color:var(--w);font-family:var(--ui);font-size:16px;font-weight:600;text-align:center;outline:none;">
+    </div>
+    <p style="font-size:10px;color:var(--t3)">$0 = perfect day (big disc boost)<br>$1-30 = reasonable<br>$50+ = the sieve is winning</p>
+    <div style="display:flex;gap:6px;margin-top:8px;">
+      <button class="btn" onclick="submitSpend()">LOG IT</button>
+      <button class="btn" onclick="document.getElementById('spendScr').classList.remove('show')" style="color:var(--t3);border-color:var(--t3)">CANCEL</button>
+    </div>
+    <div style="margin-top:12px;font-size:10px;color:var(--t3)" id="spendHistory"></div>
+  </div>
+
+  <!-- QUEST LOG OVERLAY -->
+  <div class="evo" id="questScr">
+    <div class="kr">퀘스트</div>
+    <h2>QUEST LOG</h2>
+    <div id="questList" style="width:100%;max-width:320px;text-align:left;max-height:300px;overflow-y:auto;"></div>
+    <button class="btn" onclick="document.getElementById('questScr').classList.remove('show')" style="margin-top:12px">CLOSE</button>
+  </div>
+
+  <!-- CLASS INFO OVERLAY -->
+  <div class="evo" id="classScr">
+    <div class="kr">클래스 정보</div>
+    <h2 id="ciTitle">CLASS INFO</h2>
+    <div style="font-size:28px;margin:4px 0" id="ciIcon"></div>
+    <p id="ciDesc" style="margin-bottom:6px"></p>
+    <div style="text-align:left;width:100%;max-width:320px;">
+      <div style="font-family:var(--ti);font-size:8px;letter-spacing:2px;color:var(--t3);margin:10px 0 6px">ALIGNMENT</div>
+      <p id="ciAlign" style="font-size:12px;color:var(--gl3);margin-bottom:4px"></p>
+      <p id="ciAlignDesc" style="font-size:10px;color:var(--t3);margin-bottom:10px"></p>
+      <div style="font-family:var(--ti);font-size:8px;letter-spacing:2px;color:var(--t3);margin:10px 0 6px">ACTIVE ABILITIES</div>
+      <div id="ciAbilities"></div>
+      <div style="font-family:var(--ti);font-size:8px;letter-spacing:2px;color:var(--t3);margin:10px 0 6px">PASSIVE BONUSES</div>
+      <div id="ciPassives"></div>
+      <div style="font-family:var(--ti);font-size:8px;letter-spacing:2px;color:var(--t3);margin:10px 0 6px">CLASS WEAKNESS</div>
+      <p id="ciWeakness" style="font-size:11px;color:var(--r);margin-bottom:6px"></p>
+    </div>
+    <button class="btn" onclick="document.getElementById('classScr').classList.remove('show')" style="margin-top:10px">CLOSE</button>
+  </div>
+  <div class="evo" id="evo">
+    <div class="kr">시스템 알림 — 진화</div>
+    <h2 id="evT"></h2>
+    <canvas id="evC" width="24" height="32" style="width:168px;height:224px;image-rendering:pixelated"></canvas>
+    <p id="evD"></p>
+    <button class="btn" onclick="document.getElementById('evo').classList.remove('show')">ARISE</button>
+  </div>
+</div>
+
+<script>
+// ═══════════════════════════════════════════════
+// PIXEL ART ENGINE v2 — 24×32 canvas, 6 stages
+// RPG Maker / CrossCode chibi proportions
+// Big heads, short legs, dense fill, colored outlines
+// ═══════════════════════════════════════════════
+const H=h=>{const m=h.match(/^#(..)(..)(..)/);return m?[+('0x'+m[1]),+('0x'+m[2]),+('0x'+m[3])]:[0,0,0]};
+
+function D(ctx,w,h,grid,pal){
+  const img=ctx.createImageData(w,h);
+  for(let y=0;y<h;y++){const r=grid[y]||'';for(let x=0;x<w;x++){const c=r[x];if(!c||c==='.')continue;const hex=pal[c];if(!hex)continue;const[R,G,B]=H(hex);const i=(y*w+x)*4;img.data[i]=R;img.data[i+1]=G;img.data[i+2]=B;img.data[i+3]=255;}}
+  ctx.clearRect(0,0,w,h);ctx.putImageData(img,0,0);
+}
+
+// ─── STAGE 0: E-RANK SCRUB ───
+// Peasant boy: big messy brown hair, green tunic, no weapon
+const S0={
+  name:'E-RANK SCRUB',desc:'$400 gold. No armour. No plan. Just a guy with a cat and a dream.',rank:'E',
+  pal:{
+    h:'#9a6840',H:'#6a4420',j:'#c08850',J:'#b07848',
+    s:'#f0c898',S:'#dab080',k:'#c09060',
+    e:'#181830',w:'#f0e8e0',m:'#d07868',
+    a:'#58983c',A:'#3c7828',i:'#70b050',I:'#88c868',
+    p:'#4a6830',
+    t:'#8a6840',T:'#604828',
+    b:'#7a6848',B:'#584830',n:'#987858',
+    f:'#6a5030',F:'#483818',
+  },
+  grid:[
+    '........................',
+    '......HHHHHHHH..........',
+    '.....HhhhhhhhHH.........',
+    '....HhhjjjjjhhHH........',
+
+    '....HhhhhhhhhhhH........',
+    '....JhhhhhhhhhhJ........',
+    '....JhJjhhhJjhJ.........',
+
+    '.....JssssssssJ.........',
+    '.....kssssssssk.........',
+    '.....kseswwsesk.........',
+    '.....ksssssssSk.........',
+    '.....kkssmmsSkk.........',
+    '......ksSSSsk...........',
+    '......IiaaaiI...........',
+    '.....IiaaaaaiI..........',
+    '.....IiaapaaiI..........',
+    '.....AiaaaaaaIA.........',
+    '.....AAaaaaaaAA.........',
+    '......AAtTTtAA..........',
+    '......AAtTTtAA..........',
+    '.......ttTTtt...........',
+    '......nBBbbBBn..........',
+    '......BBBbbBBB..........',
+    '......BBb..bBB..........',
+    '......nBb..bBn..........',
+    '.......fb..bf...........',
+    '.....FFff..ffFF.........',
+    '.....FFF....FFF.........',
+    '........................',
+    '........................',
+    '........................',
+    '........................',
+  ]
+};
+
+// ─── STAGE 1: D-RANK RECRUIT ───
+// Red headband, leather vest, belt dagger
+const S1={
+  name:'D-RANK RECRUIT',desc:'First savings made. A dagger earned. The journey of discipline begins.',rank:'D',
+  pal:{
+    h:'#9a6840',H:'#6a4420',j:'#c08850',J:'#b07848',
+    s:'#f0c898',S:'#dab080',k:'#c09060',
+    e:'#181830',w:'#f0e8e0',m:'#d07868',
+    r:'#d83030',R:'#a82020',
+    a:'#a88050',A:'#806030',i:'#c09860',I:'#d0a870',
+    g:'#d8b838',
+    t:'#705038',T:'#503020',
+    b:'#7a6848',B:'#584830',n:'#987858',
+    f:'#6a5030',F:'#483818',
+    W:'#c0c8d8',X:'#dce4f0',Q:'#b8a030',
+  },
+  grid:[
+    '........................',
+    '......HHHHHHHH..........',
+    '.....HhhhhhhhHH.........',
+    '....HhhjjjjjhhHH........',
+
+    '....RrrrrrrrrrrR........',
+    '....JhJjhhhJjhJ.........',
+
+    '....JhhhhhhhhhhJ........',
+    '.....Jssssssssj.........',
+    '.....kssssssssk.........',
+    '.....kseswwsesk.........',
+    '.....ksssssssSk.........',
+    '.....kkssmmsSkk.........',
+    '......ksSSSsk...........',
+    '......IiaaaiI...........',
+    '.....IiaaaaaiI..........',
+    '.....AiaaTagaiA.........',
+    '.....AAaaaaaaAA.........',
+    '.....AAaaaaaaAA...X.....',
+    '......AAtTTtAA....W.....',
+    '......AAtTTtAA...WW.....',
+    '.......ttTTtt...XWXQ....',
+    '......nBBbbBBn...QQ.....',
+    '......BBBbbBBB..........',
+    '......BBb..bBB..........',
+    '......nBb..bBn..........',
+    '.......fb..bf...........',
+    '.....FFff..ffFF.........',
+    '.....FFF....FFF.........',
+    '........................',
+    '........................',
+    '........................',
+    '........................',
+  ]
+};
+
+// ─── STAGE 2: C-RANK WARRIOR ───
+// Iron sallet helm, chainmail, gold pauldrons, broadsword
+const S2={
+  name:'C-RANK WARRIOR',desc:'Marketing running. Code frozen. The warrior learns to fight smart, not pretty.',rank:'C',
+  pal:{
+    c:'#8898b0',C:'#a0b0c8',d:'#6878a0',D:'#b8c8d8',
+    s:'#f0c898',S:'#dab080',k:'#c09060',
+    e:'#181830',w:'#f0e8e0',m:'#d07868',
+    a:'#7888a0',A:'#607088',i:'#90a0b8',I:'#a8b8c8',
+    g:'#d8b838',G:'#c0a028',Y:'#e8c848',
+    T:'#4080c0',t:'#58a0d8',
+    J:'#505868',
+    b:'#586878',B:'#405060',
+    f:'#4a5868',F:'#384050',
+    W:'#c8d0e0',X:'#dce4f0',Q:'#c8a830',
+  },
+  grid:[
+    '........................',
+    '.......ddddddd..........',
+    '......dDDDDDDDd.........',
+    '.....dDCCCCCCCDd........',
+    '.....dDCCCCCCCDd........',
+    '.....dcCDDDDCcdd........',
+    '.....dccCCCCccd.........',
+    '......dsssssssd.........',
+    '......kssssssskd........',
+    '......kseswwseSk........',
+    '......ksssssssSk........',
+    '......kkssmmsSkk........',
+    '....YGgiaaaiIgGY....X...',
+    '...YGIiiaaaaaiIGY..WX...',
+    '...GAIiAAAAAAAAIGk.WX...',
+    '...GAIiAAAAAAAAIGk.WXX..',
+    '...GAAAAAATTAAAAGk.WXX..',
+    '....GAAAAATTAAAAGkQWWQ..',
+    '....GAAAAAJJAAAAGk.QQQ..',
+    '.....AAAIttttIAAA..QQ...',
+    '......AAtTTTTtAA........',
+    '......BBBbbBBBBB........',
+    '......BBBbbBBBBb........',
+    '......BBb...bBBb........',
+    '......Bb.....bBb........',
+    '.....FFf.....fFF........',
+    '.....FFF.....FFF........',
+    '........................',
+    '........................',
+    '........................',
+    '........................',
+    '........................',
+  ]
+};
+
+// ─── STAGE 3: B-RANK KNIGHT ───
+// Full plate, silver helm with crimson plume, blue T-visor,
+// gold pauldrons, blue tabard, longsword, cape begins
+const S3={
+  name:'B-RANK KNIGHT',desc:'Revenue flowing. Savings real. The knight stands armoured at last.',rank:'B',
+  pal:{
+    o:'#384058',
+    c:'#98a8c0',C:'#b0c0d0',d:'#7888a0',D:'#c8d0e0',
+    p:'#d03838',P:'#b02020',
+    v:'#3070d8',V:'#2050a8',
+    s:'#d0d8e8',S:'#e0e8f0',a:'#b0b8d0',A:'#98a0b8',
+    g:'#e8c840',G:'#d0a828',Y:'#f0d858',
+    T:'#3070c8',t:'#4890e0',
+    J:'#485060',H:'#8898b0',
+    R:'#2848a8',r:'#3060c0',
+    L:'#7888a0',l:'#90a0b8',
+    K:'#506878',k:'#607888',
+    W:'#d0d8e8',X:'#e8f0ff',Q:'#d8c040',
+  },
+  grid:[
+    '........................',
+    '.......ppppp............',
+    '......PPpppPP...........',
+    '......oPPpPPo...........',
+    '.....oDDDDDDDo..........',
+    '.....oCCCCCCCo..........',
+    '.....oCCDDDCCo..........',
+    '.....oVVVvvVVo..........',
+    '......oCCCCCo...........',
+    '......ooCCCoo...........',
+    '...YGgaSSSSSSagGY.......',
+    '..YGgaSSSSSSSSSgGY..X...',
+    '..GgAaSSSSSSSsaAgG..WX..',
+    '..GHAASSSSSSSSSAHG..WX..',
+    '..GHAASSSSSSSSAAHG..WX..',
+    '..GHAASSSSSSSSAAHG.WXX..',
+    '...HAASSSSSSSAAAH.QWWQ..',
+    '...HAAJJgJJgJJAAH..QQ...',
+    '....AATtttttTTAAA..QQ...',
+    '.R..AATtttttTTAA........',
+    '.R..AATTTaTTTTAA........',
+    '.R...AaSSSSSsaA.........',
+    '.r...llAAAAAAll.........',
+    '.r...llA...Aall.........',
+    '.r...kk.....kkl.........',
+    '.....kk.....kkK.........',
+    '........................',
+    '........................',
+    '........................',
+    '........................',
+    '........................',
+    '........................',
+  ]
+};
+
+// ─── STAGE 4: A-RANK CHAMPION ───
+// Larger plume, gleaming plate, flowing crimson cape, glowing enchanted sword
+const S4={
+  name:'A-RANK CHAMPION',desc:'Side income live. Runway built. The cape earned through months of grinding.',rank:'A',
+  pal:{
+    o:'#384058',
+    c:'#a8b8d0',C:'#c0c8e0',d:'#8898b0',D:'#d0d8e8',
+    p:'#e04040',P:'#c82828',
+    v:'#3878e0',V:'#2858c0',
+    s:'#d0d8e8',S:'#e0e8f0',a:'#b8c0d8',A:'#a0a8c0',
+    g:'#f0d050',G:'#d8b838',Y:'#f8e068',
+    R:'#b02028',r:'#c83030',q:'#d84040',
+    T:'#3070c8',t:'#4890e0',
+    J:'#506070',H:'#8898b0',
+    L:'#7888a0',l:'#90a0b8',
+    K:'#506878',k:'#607888',
+    W:'#d8e0f0',X:'#e8f0ff',Q:'#e0c840',Z:'#80c0f8',
+  },
+  grid:[
+    '........................',
+    '......PPPPppp...........',
+    '.....PPpppppp...........',
+    '......oPPpPPo...........',
+    '.....oDDDDDDDo..........',
+    '.....oCCCCCCCo..........',
+    '.....oCCDDDCCo..........',
+    '.R...oVVVvvVVo..........',
+    '.R....oCCCCCo...........',
+    '.R....ooCCCoo...........',
+    '.RYGgaSSSSSSagGY........',
+    '.RYGgaSSSSSSSSSgGY......',
+    '.R.GgAaSSSSSSsaAgG..Z...',
+    '.r.GHAASSSSSSSSSAHGZWX..',
+    '.r.GHAASSSSSSSSAAHGZWX..',
+    '.r.GHAASSSSSSSSAAHGZWXX.',
+    '.r..HAASSSSSSSAAAH.QWWQ.',
+    '.q..HAAJJgJJgJJAAH.QQQ..',
+    '.q...AATtttttTTAAA..QQ..',
+    '.q...AATtttttTTAA.......',
+    '.q...AATTTaTTTTAA.......',
+    '.q....AaSSSSSsaA........',
+    '..q...llAAAAAAll........',
+    '..q...llA...Aall........',
+    '..q...kk.....kkl........',
+    '......kk.....kkK........',
+    '........................',
+    '........................',
+    '........................',
+    '........................',
+    '........................',
+    '........................',
+  ]
+};
+
+// ─── STAGE 5: S-RANK SOVEREIGN ───
+// Golden crown, mythril plate, royal purple cape, holy sword glow
+const S5={
+  name:'S-RANK SOVEREIGN',desc:'Freedom achieved. You work for yourself. The system acknowledges your awakening.',rank:'S',
+  pal:{
+    o:'#384058',
+    c:'#b8c0d8',C:'#c8d0e8',d:'#98a8c0',D:'#d8e0f0',
+    n:'#f0d848',N:'#e0c030',M:'#d0a828',
+    v:'#40a0f0',V:'#3080d0',
+    s:'#d8e0f0',S:'#e8f0f8',a:'#c0c8e0',A:'#a8b0c8',
+    g:'#f8e060',G:'#e0c840',Y:'#fff070',
+    R:'#4828a0',r:'#5838b8',q:'#6848c8',
+    T:'#3070c8',t:'#4890e0',
+    J:'#506070',H:'#8898b0',
+    L:'#8090a8',l:'#90a0b8',
+    K:'#506878',k:'#607888',
+    W:'#e0e8ff',X:'#f0f8ff',Q:'#e8d048',Z:'#98c8ff',
+    u:'#5080e8',U:'#3868d0',
+  },
+  grid:[
+    '....N.nMNMn.N...........',
+    '.....NnMMMnNN...........',
+    '......oNMNo.............',
+    '......oDDDDDDo..........',
+    '.....oDDDDDDDDo.........',
+    '.....oCCCCCCCCo.........',
+    '.....oCCDDDCCCo.........',
+    '.R...oVVVvvVVVo.........',
+    '.R....oCCCCCCo..........',
+    '.R....ooCCCCoo..........',
+    '.RYGgaSSSSSSSSagGY......',
+    '.RYGgaSSSSSSSSSSgGY.....',
+    '.R.GgAaSSSSSSSSaAgGuZ...',
+    '.r.GHAASSSSSSSSSSAHuZWX.',
+    '.r.GHAASSSSSSSSSAAHUZWX.',
+    '.q.GHAASSSSSSSSAAaHUZWXX',
+    '.q..HAASSSSSSSSaaaHQWWQu',
+    '.q..HAAJJgJJgJJAAH.QQQQ.',
+
+    '.q...AATtttttTTAAA..QQ..',
+    '.q...AATtttttTTAA.......',
+    '.q...AATTTaTTTTAA.......',
+    '..q...AaSSSSSsaA........',
+    '..q...llAAAAAAll........',
+    '..q...llA...Aall........',
+    '..q...kk.....kkl........',
+    '......kk.....kkK........',
+    '........................',
+    '........................',
+    '........................',
+    '........................',
+    '........................',
+    '........................',
+  ]
+};
+
+const STAGES=[S0,S1,S2,S3,S4,S5];
+
+// ═══════════════════════════════════════════════
+// CLASS-SPECIFIC SPRITES — Stages 3/4/5 per class
+// Same chibi proportions, distinct class identity
+// ═══════════════════════════════════════════════
+
+const CLASS_SPRITES={
+
+// ─── LOST ARTISAN: Purple tones, crafter goggles, hammer ───
+lost_artisan:{
+  3:{
+    pal:{
+      o:'#2a1828',
+      c:'#8870a0',C:'#a088b8',d:'#685890',D:'#b898c8',
+      p:'#d8a040',P:'#c08830',
+      v:'#80d8e8',V:'#60c0d0',
+      s:'#9878b0',S:'#a888c0',a:'#7860a0',A:'#685090',
+      g:'#d8a040',G:'#c08830',Y:'#e8b850',
+      T:'#c8a070',t:'#d8b888',
+      J:'#604838',H:'#685090',
+      L:'#605040',l:'#706050',
+      K:'#504030',k:'#605040',
+      W:'#a8b0c0',X:'#c0c8d0',Q:'#886030',
+      f:'#f0c898',F:'#dab080',z:'#c09060',
+      e:'#181830',w:'#f0e8e0',m:'#d07868',
+    },
+    grid:[
+      '........................',
+      '......oDDDDDDo..........',
+      '.....oCCCCCCCCo.........',
+      '.....oCCCCCCCCo.........',
+      '.....VVvvCCvvVV.........',
+      '.....oCCCCCCCCo.........',
+      '......offffffo..........',
+
+      '......zffffffzz.........',
+
+      '......zfewwfeFzz........',
+      '......zffffffFz.........',
+
+      '......zzfmmfFzz.........',
+
+      '.......zzFFzz...........',
+      '...YGgsSSSSSsgGY........',
+      '..YGgsSSSSSSSSSgGY......',
+      '..GgAaSSSJJJSSaAgG..XX..',
+      '..GHAASJJJJJJSAAHGk.XX..',
+      '..GHAASJJJJJJSAAHGk.WW..',
+      '...HAASStttSSAAAH...W...',
+      '...HAAStTTTTtSAAH..Q....',
+      '....AAtTTTTTTtAAA.......',
+
+      '....AAtTTTTTTtAA........',
+
+      '.....LlllAllllL.........',
+      '.....LlllAllllL.........',
+      '.....Ll.....llL.........',
+      '.....kk.....kkK.........',
+      '.....KK.....KKK.........',
+      '........................',
+      '........................',
+      '........................',
+      '........................',
+      '........................',
+      '........................',
+    ]
+  },
+  4:{
+    pal:{
+      o:'#2a1828',
+      c:'#9880b0',C:'#b098c0',d:'#7868a0',D:'#c0a8d0',
+      p:'#e0b050',P:'#c89838',
+      v:'#90e8f0',V:'#70d0e0',
+      s:'#a888c0',S:'#b898d0',a:'#8870b0',A:'#7860a0',
+      g:'#e0b050',G:'#c89838',Y:'#f0c868',
+      R:'#503078',r:'#604088',q:'#705098',
+      T:'#d0a878',t:'#e0c098',
+      J:'#685040',H:'#7860a0',
+      L:'#605040',l:'#706050',
+      K:'#504030',k:'#605040',
+      W:'#b8c0c8',X:'#d0d8e0',Q:'#986838',Z:'#a888c8',
+      f:'#f0c898',F:'#dab080',z:'#c09060',
+      e:'#181830',w:'#f0e8e0',m:'#d07868',
+    },
+    grid:[
+      '......PPPPppp...........',
+      '.....PPpppppp...........',
+      '......oPPpPPo...........',
+      '.....oDDDDDDDo..........',
+      '.....VVvvCCvvVV.........',
+      '.....oCCCCCCCCo.........',
+      '.R....offffffo..........',
+      '.R....zffffffzz.........',
+      '.R....zfewwfeFzz........',
+      '.R....zffffffFz.........',
+      '.R....zzfmmfFzz.........',
+      '.R.YGGsSSSSSsSGGY.......',
+      '.r.YGgsSSSSSSSSSgGY.....',
+      '.r.GgAaSJJJJJSaAgG..ZXX.',
+      '.r.GHAAJJJJJJJAAAHG.ZXX.',
+      '.q.GHAASStttSSAAHGk..WW.',
+      '.q..HAASStTTtSSAAH...W..',
+      '.q..HAAtTTTTTTtAAH..Q...',
+      '.q...AAtTTTTTTtAAA......',
+      '.q...AATTTaTTTTAA.......',
+      '..q...AaSSSSSsaA........',
+      '..q...llAAAAAAll........',
+      '..q...llA...Aall........',
+      '..q...kk.....kkl........',
+      '......kk.....kkK........',
+      '........................',
+      '........................',
+      '........................',
+      '........................',
+      '........................',
+      '........................',
+      '........................',
+    ]
+  },
+  5:{
+    pal:{
+      o:'#2a1828',
+      c:'#a890c0',C:'#c0a8d0',d:'#8878a8',D:'#d0b8e0',
+      n:'#f0d048',N:'#e0c030',M:'#d0a828',
+      v:'#a0f0ff',V:'#80d8e8',
+      s:'#b098d0',S:'#c0a8e0',a:'#9880c0',A:'#8870b0',
+      g:'#f0d058',G:'#d8b840',Y:'#f8e070',
+      R:'#5838a0',r:'#6848b0',q:'#7858c0',
+      T:'#d8b080',t:'#e8c8a0',
+      J:'#706050',H:'#8870b0',
+      L:'#706050',l:'#807060',
+      K:'#605040',k:'#706050',
+      W:'#c8d0e0',X:'#e0e8f0',Q:'#a07040',Z:'#b898d0',
+      u:'#8060c0',U:'#6848a8',
+      f:'#f0c898',F:'#dab080',z:'#c09060',
+      e:'#181830',w:'#f0e8e0',m:'#d07868',
+    },
+    grid:[
+      '...N.nMNMn.N............',
+      '....NnMMMnNN............',
+      '......oNMNo.............',
+      '.....oDDDDDDDo..........',
+      '.....VVvvCCvvVV.........',
+      '.....oCCCCCCCCo.........',
+      '.R....offffffo..........',
+      '.R....zffffffzz.........',
+      '.R....zfewwfeFzz........',
+      '.R....zffffffFz.........',
+      '.R....zzfmmfFzz.........',
+      '.RYGGgsSSSSSsSGGY.......',
+      '.r.YGgsSSSSSSSSSgGY.....',
+      '.r.GgAaSJJJJJSaAgGuZX...',
+      '.r.GHAAJJJJJJJAAAHUZWX..',
+      '.q.GHAASStttSSAAHGUZWX..',
+      '.q..HAASStTTtSSAAH.QWWQ.',
+      '.q..HAAtTTTTTTtAAH..QQQ.',
+      '.q...AAtTTTTTTtAAA..QQ..',
+      '.q...AATTTaTTTTAA.......',
+
+      '..q...AaSSSSSsaA........',
+      '..q...llAAAAAAll........',
+      '..q...llA...Aall........',
+      '..q...kk.....kkl........',
+      '......kk.....kkK........',
+      '........................',
+      '........................',
+      '........................',
+      '........................',
+      '........................',
+      '........................',
+      '........................',
+    ]
+  }
+},
+
+// ─── MERCHANT LORD: Rich green robes, gold sash, scepter ───
+merchant:{
+  3:{
+    pal:{
+      o:'#1a2818',
+      c:'#509040',C:'#60a850',d:'#408030',D:'#70b860',
+      p:'#d8a040',P:'#c08830',
+      v:'#e8c838',V:'#d0b028',
+      s:'#50a040',S:'#60b050',a:'#388830',A:'#287020',
+      g:'#f0d050',G:'#d8b838',Y:'#f8e068',
+      T:'#982830',t:'#b03838',
+      J:'#504020',H:'#408830',
+      L:'#484030',l:'#585040',
+      K:'#383020',k:'#484030',
+      W:'#f0e8c8',X:'#f8f0d8',Q:'#c0a030',
+      f:'#f0c898',F:'#dab080',z:'#c09060',
+      e:'#181830',w:'#f0e8e0',m:'#d07868',
+    },
+    grid:[
+      '........................',
+      '.......PPPPppp..........',
+      '......PPPPPPPPo.........',
+      '.....oDDDDDDDDDo........',
+      '.....oCCCCCCCCCo........',
+      '.....oCDDDDDDCo.........',
+      '......offffffo..........',
+      '......zffffffzz.........',
+      '......zfewwfeFzz........',
+      '......zffffffFz.........',
+      '......zzfmmfFzz.........',
+      '.......zzFFzz...........',
+      '...YGgsSSSSSsgGY..XX....',
+      '..YGgsSSSSSSSSSgGY.WW...',
+      '..GgAaSSSSSSSSSaAGkQW...',
+      '..GHAASSSgSSSSAAHGkQW...',
+      '..GHAASSSgSSSSAAHGkQW...',
+      '...HAASStTTtSSAAAHkQW...',
+      '...HAAStTTTTtSAAH..QW...',
+      '....AAtTTTTTTtAAA..Q....',
+      '....AAtTTTTTTtAA........',
+      '.....LlllAllllL.........',
+      '.....LlllAllllL.........',
+      '.....Ll.....llL.........',
+      '.....kk.....kkK.........',
+      '.....KK.....KKK.........',
+      '........................',
+      '........................',
+      '........................',
+      '........................',
+      '........................',
+      '........................',
+    ]
+  },
+  4:{
+    pal:{
+      o:'#1a2818',
+      c:'#60a850',C:'#70b860',d:'#509040',D:'#80c870',
+      p:'#e8c050',P:'#d0a840',
+      v:'#f0d848',V:'#d8c030',
+      s:'#58a848',S:'#68b858',a:'#488840',A:'#387830',
+      g:'#f0d848',G:'#e0c040',Y:'#f8e868',
+      R:'#882028',r:'#a02830',q:'#b83838',
+      T:'#a82830',t:'#c03838',
+      J:'#605028',H:'#509040',
+      L:'#585040',l:'#686050',
+      K:'#484030',k:'#585040',
+      W:'#f8f0d0',X:'#fff8e0',Q:'#d0a838',Z:'#f0e870',
+      f:'#f0c898',F:'#dab080',z:'#c09060',
+      e:'#181830',w:'#f0e8e0',m:'#d07868',
+    },
+    grid:[
+      '......PPPPPPo...........',
+      '.....PPpppppp...........',
+      '......oPPpPPo...........',
+      '.....oDDDDDDDDo.........',
+      '.....oCCCCCCCCCo........',
+      '.....oCDDDDDDCCo........',
+      '.R....oVVVvvVVo.........',
+      '.R....offffffo..........',
+      '.R....zfewwfeFzz........',
+      '.R....zffffffFz.........',
+      '.R....zzfmmfFzz.........',
+      '.RYGGgsSSSSSsSGGY.XX....',
+      '.r.YGgsSSSSSSSSSgGYWW...',
+      '.r.GgAaSSSSSSSSSaAGZQW..',
+      '.r.GHAASSSgSSSSAAHGZQW..',
+      '.q.GHAASSSgSSSSAAHGkQW..',
+      '.q..HAASStTTtSSAAH..QW..',
+      '.q..HAAStTTTTtSAAH..QW..',
+      '.q...AAtTTTTTTtAAA..QQ..',
+      '.q...AATTTaTTTTAA.......',
+
+      '..q...AaSSSSSsaA........',
+      '..q...llAAAAAAll........',
+      '..q...llA...Aall........',
+      '..q...kk.....kkl........',
+      '......kk.....kkK........',
+      '........................',
+      '........................',
+      '........................',
+      '........................',
+      '........................',
+      '........................',
+      '........................',
+    ]
+  },
+  5:{
+    pal:{
+      o:'#1a2818',
+      c:'#70b860',C:'#80c870',d:'#60a850',D:'#90d880',
+      n:'#f0d048',N:'#e0c030',M:'#d0a828',
+      v:'#f8e858',V:'#e0d040',
+      s:'#68b858',S:'#78c868',a:'#58a848',A:'#489038',
+      g:'#f8e060',G:'#f0d048',Y:'#fff080',
+      R:'#981828',r:'#b02828',q:'#c83838',
+      T:'#b83030',t:'#d04040',
+      J:'#686038',H:'#60a850',
+      L:'#586050',l:'#687060',
+      K:'#484838',k:'#586050',
+      W:'#fff0e0',X:'#fff8e8',Q:'#e0c038',Z:'#f0f080',
+      u:'#60a840',U:'#489030',
+      f:'#f0c898',F:'#dab080',z:'#c09060',
+      e:'#181830',w:'#f0e8e0',m:'#d07868',
+    },
+    grid:[
+      '...N.nMNMn.N............',
+      '....NnMMMnNN............',
+      '......oNMNo.............',
+      '.....oDDDDDDDDo.........',
+      '.....oCCCCCCCCCo........',
+      '.....oCDDDDDDCCo........',
+      '.R...oVVVvvVVVo.........',
+      '.R....offffffo..........',
+      '.R....zfewwfeFzz........',
+      '.R....zffffffFz.........',
+      '.R....zzfmmfFzz.........',
+      '.RYGGgsSSSSSsSGGY.......',
+      '.r.YGgsSSSSSSSSSgGY.....',
+      '.r.GgAaSSSgSSSSSaAGuZX..',
+      '.r.GHAASSSgSSSSAAHGUZWX.',
+      '.q.GHAASStTTtSSAAHGkQWX.',
+      '.q..HAASStTTTtSAAH..QWX.',
+      '.q..HAAStTTTTTtAAH..QQ..',
+      '.q...AAtTTTTTTtAAA..QQ..',
+      '.q...AATTTaTTTTAA.......',
+
+      '..q...AaSSSSSsaA........',
+      '..q...llAAAAAAll........',
+      '..q...llA...Aall........',
+      '..q...kk.....kkl........',
+      '......kk.....kkK........',
+      '........................',
+      '........................',
+      '........................',
+      '........................',
+      '........................',
+      '........................',
+      '........................',
+    ]
+  }
+},
+
+// ─── IRON WARRIOR: Dark iron plate, red accents, greatsword ───
+warrior:{
+  3:{
+    pal:{
+      o:'#1a1820',
+      c:'#808890',C:'#98a0a8',d:'#687078',D:'#a8b0b8',
+      p:'#c82828',P:'#a81818',
+      v:'#d83828',V:'#c02818',
+      s:'#808890',S:'#909898',a:'#707880',A:'#606870',
+      g:'#c83020',G:'#a82018',Y:'#d84030',
+      T:'#303030',t:'#404040',
+      J:'#404040',H:'#606870',
+      L:'#504848',l:'#605858',
+      K:'#404040',k:'#504848',
+      W:'#a8b0c0',X:'#c0c8d0',Q:'#c83020',
+      f:'#f0c898',F:'#dab080',z:'#c09060',
+      e:'#181830',w:'#f0e8e0',m:'#d07868',
+    },
+    grid:[
+      '........................',
+      '.......ppppp............',
+      '......PPpppPP...........',
+      '......oPPpPPo...........',
+      '.....oDDDDDDDo..........',
+      '.....oCCCCCCCo..........',
+      '.....oCCDDDCCo..........',
+      '.....oVVVVVVVo..........',
+      '......odddddo...........',
+      '......zzFFFzz...........',
+      '...YGgsSSSSSsgGY..X.....',
+      '..YGgsSSSSSSSSSgGYWXX...',
+      '..GgAaSSSSSSSSSaAgGWXX..',
+      '..GHAASSSSSSSSSAAHGkXX..',
+      '..GHAASSSSSSSSAAaHGkXX..',
+      '..GHAASSSSSSSSAAHG.WXX..',
+      '...HAASSSSSSSSaaAHQWWXQ.',
+      '...HAAStTTTtSAAAH..QQQ..',
+
+      '....AAtTTTTTtAAAH...Q...',
+      '....AAtTTTTTtAAA........',
+      '......LlllllllL.........',
+      '......LlllAllllL........',
+      '......Ll.....llL........',
+      '......kk.....kkK........',
+      '......KK.....KKK........',
+      '........................',
+      '........................',
+      '........................',
+      '........................',
+      '........................',
+      '........................',
+      '........................',
+    ]
+  },
+  4:{
+    pal:{
+      o:'#1a1820',
+      c:'#909898',C:'#a8b0b8',d:'#788088',D:'#b8c0c8',
+      p:'#d83838',P:'#c02828',
+      v:'#e84030',V:'#d03020',
+      s:'#909898',S:'#a0a8a8',a:'#808888',A:'#707878',
+      g:'#d83828',G:'#c02818',Y:'#e84838',
+      R:'#302828',r:'#403838',q:'#504848',
+      T:'#383030',t:'#484040',
+      J:'#484040',H:'#707878',
+      L:'#585050',l:'#686060',
+      K:'#484040',k:'#585050',
+      W:'#b8c0d0',X:'#d0d8e0',Q:'#d83828',Z:'#e86050',
+      f:'#f0c898',F:'#dab080',z:'#c09060',
+      e:'#181830',w:'#f0e8e0',m:'#d07868',
+    },
+    grid:[
+      '......PPPPppp...........',
+      '.....PPpppppp...........',
+      '......oPPpPPo...........',
+      '.....oDDDDDDDo..........',
+      '.....oCCCCCCCo..........',
+      '.....oCCDDDCCo..........',
+      '.R...oVVVVVVVo..........',
+      '.R....odddddo...........',
+      '.R....zzFFFzz...........',
+      '.RYGGgsSSSSSsSGGY..Z....',
+      '.RYGgsSSSSSSSSSgGYZXX...',
+      '.R.GgAaSSSSSSSsaAgGZXX..',
+      '.r.GHAASSSSSSSSSAHGZWXX.',
+      '.r.GHAASSSSSSSSAAHGZWXX.',
+      '.r.GHAASSSSSSSSAAHG.WXX.',
+      '.q..HAASSSSSSSAAAH.QWWXQ',
+      '.q..HAAStTTTtSAAAH..QQQ.',
+
+      '.q...AAtTTTTTTtAAA...Q..',
+      '.q...AATTTaTTTTAA.......',
+
+      '.q....AaSSSSSsaA........',
+      '..q...llAAAAAAll........',
+      '..q...llA...Aall........',
+      '..q...kk.....kkl........',
+      '......kk.....kkK........',
+      '........................',
+      '........................',
+      '........................',
+      '........................',
+      '........................',
+      '........................',
+      '........................',
+      '........................',
+    ]
+  },
+  5:{
+    pal:{
+      o:'#1a1820',
+      c:'#98a0a8',C:'#b0b8c0',d:'#889090',D:'#c0c8d0',
+      n:'#d83828',N:'#c02018',M:'#a81810',
+      v:'#e84838',V:'#d83028',
+      s:'#a0a8a8',S:'#b0b8b8',a:'#909898',A:'#808888',
+      g:'#e84030',G:'#d03028',Y:'#f05040',
+      R:'#383030',r:'#484040',q:'#585050',
+      T:'#403838',t:'#504848',
+      J:'#504848',H:'#808888',
+      L:'#605858',l:'#707070',
+      K:'#504848',k:'#605858',
+      W:'#c8d0d8',X:'#d8e0e8',Q:'#d83828',Z:'#f07060',
+      u:'#c03028',U:'#a81818',
+      f:'#f0c898',F:'#dab080',z:'#c09060',
+      e:'#181830',w:'#f0e8e0',m:'#d07868',
+    },
+    grid:[
+      '...N.nMNMn.N............',
+      '....NnMMMnNN............',
+      '......oNMNo.............',
+      '.....oDDDDDDDo..........',
+      '.....oCCCCCCCo..........',
+      '.....oCCDDDCCo..........',
+      '.R...oVVVVVVVo..........',
+      '.R....odddddo...........',
+      '.R....zzFFFzz...........',
+      '.RYGGgsSSSSSsSGGYuZ.....',
+      '.RYGgsSSSSSSSSSgGUZXX...',
+      '.R.GgAaSSSSSSSSaAgUZWXX.',
+      '.r.GHAASSSSSSSSSAHUZWXX.',
+      '.r.GHAASSSSSSSSAAHUZWXX.',
+      '.q.GHAASSSSSSSSAAHG.WXX.',
+      '.q..HAASSSSSSSAAAH.QWWXQ',
+      '.q..HAAStTTTtSAAAH..QQQ.',
+
+      '.q...AAtTTTTTTtAAA..QQ..',
+      '.q...AATTTaTTTTAA.......',
+
+      '.q....AaSSSSSsaA........',
+      '..q...llAAAAAAll........',
+      '..q...llA...Aall........',
+      '..q...kk.....kkl........',
+      '......kk.....kkK........',
+      '........................',
+      '........................',
+      '........................',
+      '........................',
+      '........................',
+      '........................',
+      '........................',
+      '........................',
+    ]
+  }
+},
+
+// ─── GUARDIAN: White/green/teal, circlet, staff + dagger ───
+guardian:{
+  3:{
+    pal:{
+      o:'#182820',
+      c:'#98c8a0',C:'#b0d8b0',d:'#80b090',D:'#c0e8c0',
+      p:'#e8c840',P:'#d0b030',
+      v:'#78c898',V:'#60b080',
+      s:'#98c8a8',S:'#a8d8b8',a:'#80b898',A:'#70a888',
+      g:'#f0d848',G:'#d8c030',Y:'#f8e860',
+      T:'#e8e8f0',t:'#d8d8e0',
+      J:'#607060',H:'#70a888',
+      E:'#70a888',e:'#80b898',
+      L:'#607060',l:'#708070',
+      K:'#506050',k:'#607060',
+      W:'#c8b890',X:'#d8c8a0',Q:'#a09030',
+      f:'#f0c898',F:'#dab080',z:'#c09060',
+      w:'#f0e8e0',m:'#d07868',
+    },
+    grid:[
+      '........................',
+      '.......PPPppp...........',
+      '......PGGGGGPo..........',
+      '.....oDDDDDDDDo.........',
+      '.....oCCCCCCCCo.........',
+      '.....oCDDDDDCCo.........',
+      'eE....offffffo..........',
+
+      'eEE...zffffffzz.........',
+
+      'eEE...zfwwwfeFzz........',
+      'eEE...zffffffFz.........',
+
+      'eEE...zzfmmfFzz.........',
+
+      'eEE....zzFFzz...........',
+      'eEE.YGgsSSSSSsgGY.......',
+      'eE.YGgsSSSSSSSSSgGY.X...',
+      'eE.GgAaSSSSSSSSSaAGkW...',
+      'eE.GHAASSSSSSSSSAAHGkWW.',
+      'ee.GHAASSSSSSSSSAAHGXWXQ',
+      '.e..HAASSSSSSSAAAH...QQ.',
+      '....HAAStTTTtSAAH..QQ...',
+      '.....AAtTTTTTtAAA.......',
+
+      '.....AAtTTTTTtAA........',
+
+      '......LlllAllllL........',
+      '......LlllAllllL........',
+      '......Ll.....llL........',
+      '......kk.....kkK........',
+      '......KK.....KKK........',
+      '........................',
+      '........................',
+      '........................',
+      '........................',
+      '........................',
+      '........................',
+    ]
+  },
+  4:{
+    pal:{
+      o:'#182820',
+      c:'#a8d8b0',C:'#b8e8c0',d:'#98c0a0',D:'#c8f0d0',
+      p:'#f0d858',P:'#e0c040',
+      v:'#88d8a8',V:'#70c090',
+      s:'#a0d8b0',S:'#b0e8c0',a:'#90c8a0',A:'#80b890',
+      g:'#f8e060',G:'#e8c848',Y:'#fff078',
+      R:'#3060a8',r:'#4070c0',q:'#5080d0',
+      T:'#f0f0f8',t:'#e0e0e8',
+      J:'#708070',H:'#80b890',
+      E:'#80b890',e:'#90c8a0',
+      L:'#607860',l:'#708870',
+      K:'#506850',k:'#607860',
+      W:'#d0c098',X:'#e0d0a8',Q:'#b0a038',Z:'#88d8b0',
+      f:'#f0c898',F:'#dab080',z:'#c09060',
+      w:'#f0e8e0',m:'#d07868',
+    },
+    grid:[
+      '.......PPPPppp..........',
+      '......PPpppppp..........',
+      '......oPPpPPo...........',
+      '.....oDDDDDDDDo.........',
+      '.....oCCCCCCCCo.........',
+      '.....oCDDDDDCCo.........',
+      '.R.eE.offffffo..........',
+
+      '.R.eE.zffffffzz.........',
+
+      '.R.eE.zfwwwfeFzz........',
+      '.R.eE.zffffffFz.........',
+
+      '.R.eE.zzfmmfFzz.........',
+
+      '.RYeEgsSSSSSsSGGY.Z.....',
+      '.r.eEgsSSSSSSSSSgGYZX...',
+      '.r.eEAaSSSSSSSSSaAGZWX..',
+      '.r.eEHAASSSSSSSAAHGZWX..',
+      '.q.eEHAASSSSSSSAAHGkQWXQ',
+      '.q.ee.HAaSSSSSaAAH..QQQ.',
+      '.q....HAAStTtSAAH...Q...',
+      '.q.....AAtTTTtAAA.......',
+
+      '.q.....AATTaTTTAA.......',
+
+      '..q.....aSSSSSaA........',
+      '..q....llAAAAAAll.......',
+      '..q....llA...Aall.......',
+      '..q....kk.....kkl.......',
+      '.......kk.....kkK.......',
+      '........................',
+      '........................',
+      '........................',
+      '........................',
+      '........................',
+      '........................',
+      '........................',
+    ]
+  },
+  5:{
+    pal:{
+      o:'#182820',
+      c:'#b8e8c0',C:'#c8f0d0',d:'#a0c8a8',D:'#d8ffe0',
+      n:'#f0d048',N:'#e0c030',M:'#d0a828',
+      v:'#98f0c0',V:'#78d8a0',
+      s:'#b0e8c0',S:'#c0f8d0',a:'#a0d8b0',A:'#90c8a0',
+      g:'#f8e868',G:'#f0d050',Y:'#fff088',
+      R:'#3870b8',r:'#4880c8',q:'#5890d8',
+      T:'#f8f8ff',t:'#e8e8f0',
+      J:'#789080',H:'#90c8a0',
+      E:'#90c8a0',e:'#a0d8b0',
+      L:'#708868',l:'#809878',
+      K:'#607858',k:'#708868',
+      W:'#e0d0a8',X:'#f0e0b8',Q:'#c0b040',Z:'#98e8c0',
+      u:'#60c080',U:'#48a868',
+      f:'#f0c898',F:'#dab080',z:'#c09060',
+      w:'#f0e8e0',m:'#d07868',
+    },
+    grid:[
+      '...N.nMNMn.N............',
+      '....NnMMMnNN............',
+      '......oNMNo.............',
+      '.....oDDDDDDDDo.........',
+      '.....oCCCCCCCCo.........',
+      '.....oCDDDDDCCo.........',
+      '.R.eE.oVVvvVVVo.........',
+
+      '.R.eE.offffffo..........',
+
+      '.R.eE.zfwwwfeFzz........',
+      '.R.eE.zffffffFz.........',
+
+      '.R.eE.zzfmmfFzz.........',
+
+      '.RYeEgsSSSSSsSGGY.......',
+      '.r.eEgsSSSSSSSSSgGY.....',
+      '.r.eEAaSSSSSSSSSaAGuZX..',
+      '.r.eEHAASSSSSSSAAHGuZWX.',
+      '.q.eEHAASSSSSSSAAHGUZWX.',
+      '.q.ee.HAaSSSSSaAAH.QWWQ.',
+      '.q....HAAStTtSAAH..QQQ..',
+      '.q.....AAtTTTtAAA..QQ...',
+      '.q.....AATTaTTTAA.......',
+
+      '..q.....aSSSSSaA........',
+      '..q....llAAAAAAll.......',
+      '..q....llA...Aall.......',
+      '..q....kk.....kkl.......',
+      '.......kk.....kkK.......',
+      '........................',
+      '........................',
+      '........................',
+      '........................',
+      '........................',
+      '........................',
+      '........................',
+    ]
+  }
+},
+
+// ─── KNIGHT COMMANDER: Royal blue + gold, ornate ───
+commander:{
+  3:{
+    pal:{
+      o:'#182038',
+      c:'#98a0c0',C:'#b0b8d0',d:'#8090a8',D:'#c8d0e0',
+      p:'#e8c840',P:'#d0a828',
+      v:'#e8c840',V:'#d0a828',
+      s:'#3870c0',S:'#4880d0',a:'#2860b0',A:'#184898',
+      g:'#f0d848',G:'#d8c030',Y:'#f8e860',
+      T:'#f0e8d0',t:'#e8e0c0',
+      J:'#485060',H:'#2860b0',
+      L:'#384870',l:'#485880',
+      K:'#283860',k:'#384870',
+      W:'#c8d0e0',X:'#e0e8f0',Q:'#d8c030',
+      f:'#f0c898',F:'#dab080',z:'#c09060',
+      e:'#181830',w:'#f0e8e0',m:'#d07868',
+    },
+    grid:[
+      '........................',
+      '.......ppppp............',
+      '......PPpppPP...........',
+      '......oPPpPPo...........',
+      '.....oDDDDDDDo..........',
+      '.....oCCCCCCCo..........',
+      '.....oCCDDDCCo..........',
+      '.....oVVVVVVVo..........',
+      '......odddddo...........',
+      '......zzFFFzz...........',
+      '.YGGgsSSSSSSSsgGGY.X....',
+      '.YGGsSSSSSSSSSSSgGYWX...',
+      '..GGAaSSSSSSSSSaAGGkWX..',
+      '..GHAASSSSSSSSSAAHGkWX..',
+      '..GHAASSSSSSSSAAaHGkWX..',
+      '..GHAASSSSSSSSSAAHGQWXQ.',
+      '...HAAJgJJJJgJJAAH..QQ..',
+      '...HAAStTTTtSAAAH..QQ...',
+      '....AAtTTTTTtAAAH.......',
+
+      '....AATTTaTTTTAA........',
+
+      '.....AaSSSSSsaA.........',
+      '.....llAAAAAAll.........',
+      '.....llA...Aall.........',
+      '.....kk.....kkl.........',
+      '.....KK.....KKK.........',
+      '........................',
+      '........................',
+      '........................',
+      '........................',
+      '........................',
+      '........................',
+      '........................',
+    ]
+  },
+  4:{
+    pal:{
+      o:'#182038',
+      c:'#a0a8d0',C:'#b8c0e0',d:'#9098c0',D:'#d0d8f0',
+      p:'#f0d858',P:'#e0c040',
+      v:'#f0d858',V:'#e0c040',
+      s:'#4078d0',S:'#5088e0',a:'#3068c0',A:'#2058a8',
+      g:'#f8e060',G:'#f0d048',Y:'#fff078',
+      R:'#2050a0',r:'#2858b0',q:'#3068c0',
+      T:'#f8f0d8',t:'#f0e8c8',
+      J:'#505868',H:'#3068c0',
+      L:'#404878',l:'#505888',
+      K:'#303860',k:'#404878',
+      W:'#d8e0f0',X:'#e8f0ff',Q:'#e0c838',Z:'#80b8f0',
+      f:'#f0c898',F:'#dab080',z:'#c09060',
+      e:'#181830',w:'#f0e8e0',m:'#d07868',
+    },
+    grid:[
+      '......PPPPPpp...........',
+      '.....PPppppppp..........',
+      '......oPPpPPo...........',
+      '.....oDDDDDDDo..........',
+      '.....oCCCCCCCo..........',
+      '.....oCCDDDCCo..........',
+      '.R...oVVVvvVVo..........',
+      '.R....odddddo...........',
+      '.R....zzFFFzz...........',
+      '.RYGGgsSSSSSsSGGY.Z.....',
+      '.RYGGsSSSSSSSSSgGYZWX...',
+      '.R.GGAaSSSSSSSsaAgGZWX..',
+      '.r.GHAASSSSSSSSSAHGZWX..',
+      '.r.GHAASSSSSSSSAAHGZWX..',
+      '.r.GHAASSSSSSSSAAHGZWX..',
+      '.q..HAASSSSSSSAAAH.QWXQ.',
+      '.q..HAAJgJJJJgJAAH..QQQ.',
+      '.q...AAtTTTTtAAAH...QQ..',
+      '.q...AATTTaTTTTAA.......',
+
+      '.q....AaSSSSSsaA........',
+      '..q...llAAAAAAll........',
+      '..q...llA...Aall........',
+      '..q...kk.....kkl........',
+      '......kk.....kkK........',
+      '........................',
+      '........................',
+      '........................',
+      '........................',
+      '........................',
+      '........................',
+      '........................',
+      '........................',
+    ]
+  },
+  5:{
+    pal:{
+      o:'#182038',
+      c:'#b0b8e0',C:'#c0c8f0',d:'#a0a8d0',D:'#d8e0f8',
+      n:'#f0d848',N:'#e0c030',M:'#d0a828',
+      v:'#f8e860',V:'#e8d048',
+      s:'#4880e0',S:'#5890f0',a:'#3870d0',A:'#2860b8',
+      g:'#fff060',G:'#f0d848',Y:'#fff880',
+      R:'#2858b8',r:'#3060c8',q:'#3870d8',
+      T:'#fff0e0',t:'#f8e8d0',
+      J:'#586070',H:'#3870d0',
+      L:'#485080',l:'#586098',
+      K:'#384068',k:'#485080',
+      W:'#e8f0ff',X:'#f0f8ff',Q:'#e8d040',Z:'#90c0f8',
+      u:'#4080e0',U:'#3060c8',
+      f:'#f0c898',F:'#dab080',z:'#c09060',
+      e:'#181830',w:'#f0e8e0',m:'#d07868',
+    },
+    grid:[
+      '...N.nMNMn.N............',
+      '....NnMMMnNN............',
+      '......oNMNo.............',
+      '.....oDDDDDDDo..........',
+      '.....oCCCCCCCo..........',
+      '.....oCCDDDCCo..........',
+      '.R...oVVVvvVVo..........',
+      '.R....odddddo...........',
+      '.R....zzFFFzz...........',
+      '.RYGGgsSSSSSsSGGYuZX....',
+      '.RYGGsSSSSSSSSSgGUZWX...',
+      '.R.GGAaSSSSSSSsaAgUZWX..',
+      '.r.GHAASSSSSSSSSAHUZWX..',
+      '.r.GHAASSSSSSSSAAHUZWX..',
+      '.q.GHAASSSSSSSSAAHGUZWX.',
+      '.q..HAASSSSSSSAAAH.QWXQ.',
+      '.q..HAAJgJJJJgJAAH.QQQQ.',
+      '.q...AAtTTTTtAAAH..QQ...',
+      '.q...AATTTaTTTTAA.......',
+
+      '.q....AaSSSSSsaA........',
+      '..q...llAAAAAAll........',
+      '..q...llA...Aall........',
+      '..q...kk.....kkl........',
+      '......kk.....kkK........',
+      '........................',
+      '........................',
+      '........................',
+      '........................',
+      '........................',
+      '........................',
+      '........................',
+      '........................',
+    ]
+  }
+},
+
+};// end CLASS_SPRITES
+
+// ─── SUSHI THE CAT ───  (FF moogle-style pixel cat)
+const catPal={
+  o:'#f0a858',O:'#e09040',r:'#d88030',w:'#f8e8d8',
+  n:'#e06878',e:'#40c060',p:'#181828',
+  k:'#c87828',t:'#f8d0a0',i:'#f0b868',
+};
+const catGrid=[
+  '.oo..oo.................',
+
+  'oiiooiio................',
+
+  'oiioOiio................',
+
+  'oepttpeO................',
+
+  'ooontorr................',
+
+  'rrtwwtOr................',
+
+  '.rrOOrr.................',
+
+  '..r..r..................',
+
+];
+
+// ═══ RENDER ═══
+const pC=document.getElementById('pet').getContext('2d');pC.imageSmoothingEnabled=false;
+const sC=document.getElementById('sushi').getContext('2d');sC.imageSmoothingEnabled=false;
+
+// Idle animation — two frames with subtle breathing shift
+let animFrame=0;
+function drawPet(){
+  const stage=G.stage;
+  let grid,pal;
+  if(stage>=3){
+    const cls=typeof detectClass==='function'?detectClass():'default';
+    if(cls!=='default'&&CLASS_SPRITES[cls]&&CLASS_SPRITES[cls][stage]){
+      grid=CLASS_SPRITES[cls][stage].grid;
+      pal=CLASS_SPRITES[cls][stage].pal;
+    } else {
+      grid=STAGES[stage].grid;
+      pal=STAGES[stage].pal;
+    }
+  } else {
+    grid=STAGES[stage].grid;
+    pal=STAGES[stage].pal;
+  }
+  D(pC,24,32,grid,pal);
+}
+function drawCat(){D(sC,8,8,catGrid,catPal);}
+
+// ═══ GAME STATE — REAL TIME SYSTEM ═══
+// Stats decay over REAL hours. A full day = 24 real hours.
+// Decay rates: points lost PER HOUR if no action taken
+const DECAY_PER_HR={disc:0.5,nrg:0.8,foc:0.4,sal:0.15,hap:0.4,gold:8};
+// Actions have cooldowns in MINUTES
+const COOLDOWNS={sleep:20,save:15,market:12,sell:12,train:30,build:8,date:45,workout:240,blow:60,budget:1440};
+
+const SAVE_KEY='bap_tama_v2';
+const THRESH=[0,30,48,62,76,88];
+const XP_PER_LV=100;
+
+// Default state
+function freshState(){return{disc:20,nrg:65,foc:30,sal:80,hap:55,gold:600,xp:0,lv:1,stage:0,
+  achv:[],totalActions:0,totalSaved:0,totalSold:0,totalSlept:0,totalMarketed:0,totalBlown:0,totalWorkouts:0,streak:0,lastAct:'',
+  lastTick:Date.now(),lastEvent:Date.now(),cooldowns:{},created:Date.now(),
+  spendLog:[],dailyBudget:0,budgetSet:false,
+  quests:{budget:false,first_workout:false,workout_3:false,sleep_7:false,save_streak:false,market_5:false,zero_spend_day:false,evolved_once:false}
+  };}
+
+// Load or create
+let G;
+try{const saved=localStorage.getItem(SAVE_KEY);G=saved?JSON.parse(saved):freshState();G.achv=new Set(G.achv||[]);}
+catch(e){G=freshState();G.achv=new Set();}
+if(!G.lastTick)G.lastTick=Date.now();
+if(!G.cooldowns)G.cooldowns={};
+if(!G.lastEvent)G.lastEvent=Date.now();
+if(!G.created)G.created=Date.now();
+if(!(G.achv instanceof Set))G.achv=new Set(G.achv);
+if(!G.spendLog)G.spendLog=[];
+if(!G.quests)G.quests={};
+if(!G.totalWorkouts)G.totalWorkouts=0;
+if(!G.dailyBudget)G.dailyBudget=0;
+if(G.budgetSet===undefined)G.budgetSet=false;
+if(!G.totalBuilt)G.totalBuilt=0;
+if(!G.totalDates)G.totalDates=0;
+if(!G.totalTrained)G.totalTrained=0;
+
+// ═══ CLASS / ALIGNMENT / ABILITIES SYSTEM ═══
+// Class is determined by your dominant playstyle (which actions you do most)
+// Alignment shifts based on stat balance
+// Abilities give real gameplay bonuses applied in actions
+
+const CLASSES={
+  lost_artisan:{
+    name:'LOST ARTISAN',icon:'⚒',
+    desc:'High craft skill, no direction. You build beautiful things nobody buys. Sound familiar?',
+    weakness:'Focus decays 50% faster. The trance always calls.',
+    passives:['Build gives +3 extra Happiness','Focus decay increased by 50%'],
+    abilities:[{name:'Pixel Forge',desc:'Build action gives +3 bonus Happiness',color:'var(--pr)'}],
+    check:()=>G.totalBuilt>(G.totalMarketed+G.totalSold)*1.5&&G.totalBuilt>=5
+  },
+  merchant:{
+    name:'MERCHANT LORD',icon:'💰',
+    desc:'You learned to sell AND save. The Silver Tongue is fully equipped. Gold flows and stays.',
+    weakness:'Happiness decays 30% faster. All work, less play.',
+    passives:['Sell earns 25% more gold','Save gives +3 extra Discipline','Happiness decays 30% faster'],
+    abilities:[{name:'Silver Tongue',desc:'Sell actions earn 25% more gold',color:'var(--gd)'},{name:'Vault Master',desc:'Save gives +3 bonus Discipline',color:'var(--gd)'}],
+    check:()=>(G.totalSold+G.totalSaved)>(G.totalBuilt+G.totalDates)*2&&G.totalSold>=8&&G.totalSaved>=8
+  },
+  warrior:{
+    name:'IRON WARRIOR',icon:'⚔',
+    desc:'Discipline through force of will. Training and workouts forged you. Body and mind aligned.',
+    weakness:'Happiness decays 40% faster. All discipline, no joy.',
+    passives:['Train gives +2 extra to all stats','Workout cooldown reduced 30%','Happiness decays 40% faster'],
+    abilities:[{name:'Iron Will',desc:'Train gives +2 bonus to all stats',color:'var(--r)'},{name:'Battle Ready',desc:'Workout cooldown reduced to 4hrs',color:'var(--r)'}],
+    check:()=>(G.totalTrained+G.totalWorkouts)>G.totalActions*0.3&&G.totalWorkouts>=3&&G.totalTrained>=5
+  },
+  guardian:{
+    name:'GUARDIAN',icon:'🛡',
+    desc:'You protect what matters. Kayla gets real time. Sleep is honoured. Balance over grind.',
+    weakness:'Gold income 15% lower. You chose life over hustle.',
+    passives:['Date gives +5 extra Happiness','Sleep gives +3 extra Energy','Gold from Sell reduced 15%'],
+    abilities:[{name:'Party Bond',desc:'Date gives +5 bonus Happiness & restores party morale',color:'var(--g)'},{name:'Deep Rest',desc:'Sleep gives +3 bonus Energy',color:'var(--g)'}],
+    check:()=>(G.totalDates+G.totalSlept)>G.totalActions*0.35&&G.totalDates>=5&&G.totalSlept>=8
+  },
+  commander:{
+    name:'KNIGHT COMMANDER',icon:'👑',
+    desc:'The balanced path. Every stat maintained. Every duty honoured. This is what freedom looks like.',
+    weakness:'None. But maintaining balance is the hardest fight.',
+    passives:['All stat gains +15%','All decay rates reduced 20%','No weakness'],
+    abilities:[{name:'Commander\'s Aura',desc:'All stat gains boosted 15%',color:'var(--gd)'},{name:'Steady Hand',desc:'All decay rates reduced by 20%',color:'var(--gl3)'}],
+    check:()=>G.disc>=50&&G.nrg>=50&&G.foc>=50&&G.sal>=50&&G.hap>=50&&G.totalActions>=30
+  },
+  default:{
+    name:'WANDERER',icon:'🗺',
+    desc:'No clear path yet. You\'re trying things. The class will emerge from your choices.',
+    weakness:'No bonuses. No penalties. Just potential.',
+    passives:['No bonuses yet — keep playing to discover your class'],
+    abilities:[{name:'Undiscovered',desc:'Play more to unlock your class identity',color:'var(--t3)'}],
+    check:()=>true
+  }
+};
+
+// Priority order for class detection (most specific first)
+const CLASS_ORDER=['commander','merchant','warrior','guardian','lost_artisan','default'];
+
+function detectClass(){
+  for(const id of CLASS_ORDER){if(CLASSES[id].check())return id;}
+  return 'default';
+}
+
+// Alignment based on stat balance
+function detectAlignment(){
+  const d=G.disc,f=G.foc,h=G.hap,s=G.sal,n=G.nrg;
+  const chaos=G.totalBuilt*2+G.totalBlown*3;
+  const order=G.totalSaved*2+G.totalMarketed*2+G.totalSlept;
+  const good=G.totalDates*2+G.totalSlept+G.totalSaved;
+  const self=G.totalBuilt+G.totalBlown*2+G.totalSold;
+
+  let law=order>chaos?'Lawful':'Chaotic';
+  if(Math.abs(order-chaos)<10)law='Neutral';
+  let moral=good>self?'Good':'Self-Focused';
+  if(Math.abs(good-self)<8)moral='Balanced';
+
+  return law+' '+moral;
+}
+
+function getAlignmentDesc(align){
+  const descs={
+    'Lawful Good':'Structure and care. The Commander path.',
+    'Lawful Balanced':'Disciplined but practical. The Merchant or Warrior.',
+    'Lawful Self-Focused':'Disciplined grinder. Risk of burnout.',
+    'Neutral Good':'Caring without rigidity. The Guardian path.',
+    'Neutral Balanced':'Adaptable. No strong pull yet.',
+    'Neutral Self-Focused':'Pragmatic. Results matter more than method.',
+    'Chaotic Good':'Creative spirit with a good heart. Build + Date heavy.',
+    'Chaotic Balanced':'The Restless Builder. Talented but unfocused.',
+    'Chaotic Self-Focused':'The old pattern. Spending, building, no structure. The Sieve.',
+  };
+  return descs[align]||'Your path is forming.';
+}
+
+// Get active class bonuses for gameplay
+function getClassBonuses(){
+  const cls=detectClass();
+  return{
+    classId:cls,
+    sellBonus:cls==='merchant'?1.25:cls==='guardian'?0.85:cls==='commander'?1.15:1,
+    saveDiscBonus:cls==='merchant'?3:cls==='commander'?1:0,
+    trainAllBonus:cls==='warrior'?2:cls==='commander'?1:0,
+    buildHapBonus:cls==='lost_artisan'?3:0,
+    dateHapBonus:cls==='guardian'?5:0,
+    sleepNrgBonus:cls==='guardian'?3:cls==='commander'?1:0,
+    allGainMult:cls==='commander'?1.15:1,
+    decayMult:cls==='commander'?0.8:1,
+    focusDecayMult:cls==='lost_artisan'?1.5:1,
+    hapDecayMult:cls==='merchant'?1.3:cls==='warrior'?1.4:1,
+    workoutCdMult:cls==='warrior'?0.7:1,
+  };
+}
+
+function openClassInfo(){
+  const cls=detectClass();
+  const c=CLASSES[cls];
+  const align=detectAlignment();
+  document.getElementById('ciTitle').textContent=c.name;
+  document.getElementById('ciIcon').textContent=c.icon;
+  document.getElementById('ciDesc').textContent=c.desc;
+  document.getElementById('ciAlign').textContent=align;
+  document.getElementById('ciAlignDesc').textContent=getAlignmentDesc(align);
+  document.getElementById('ciWeakness').textContent=c.weakness;
+
+  const abDiv=document.getElementById('ciAbilities');
+  abDiv.innerHTML='';
+  c.abilities.forEach(a=>{
+    const d=document.createElement('div');
+    d.style.cssText='padding:6px 8px;margin-bottom:3px;background:rgba(58,143,255,0.04);border:1px solid rgba(58,143,255,0.1);border-radius:2px;';
+    d.innerHTML='<div style="font-size:12px;font-weight:600;color:'+a.color+'">'+a.name+'</div><div style="font-size:10px;color:var(--t3)">'+a.desc+'</div>';
+    abDiv.appendChild(d);
+  });
+
+  const psDiv=document.getElementById('ciPassives');
+  psDiv.innerHTML='';
+  c.passives.forEach(p=>{
+    const d=document.createElement('div');
+    d.style.cssText='font-size:10px;color:var(--t2);padding:2px 0;';
+    d.textContent='• '+p;
+    psDiv.appendChild(d);
+  });
+
+  document.getElementById('classScr').classList.add('show');
+}
+
+function saveGame(){
+  const s=Object.assign({},G,{achv:Array.from(G.achv)});
+  try{localStorage.setItem(SAVE_KEY,JSON.stringify(s));}catch(e){}
+}
+
+function avg(){return Math.floor((G.disc+G.nrg+G.foc+G.sal+G.hap)/5);}
+function cl(v){return Math.max(0,Math.min(100,Math.round(v)));}
+
+// Apply time-based decay for elapsed hours since last tick
+function applyDecay(){
+  const now=Date.now();
+  const elapsed=(now-G.lastTick)/3600000;
+  if(elapsed<=0)return;
+  const B=getClassBonuses();
+  const L=getLvBonuses();
+  const dm=B.decayMult*L.decayMult;
+
+  G.disc=cl(G.disc-DECAY_PER_HR.disc*elapsed*dm);
+  G.nrg=cl(G.nrg-DECAY_PER_HR.nrg*elapsed*dm);
+  G.foc=cl(G.foc-DECAY_PER_HR.foc*elapsed*dm*B.focusDecayMult);
+  G.sal=cl(G.sal-DECAY_PER_HR.sal*elapsed*dm);
+  G.hap=cl(G.hap-DECAY_PER_HR.hap*elapsed*dm*B.hapDecayMult);
+  G.gold=Math.max(0,Math.round(G.gold-DECAY_PER_HR.gold*elapsed));
+
+  // Level milestone bonuses applied on tick
+  if(G.lv>=10&&G.lv%10===0&&!G._lvMilestone){
+    G.disc=cl(G.disc+5);G.nrg=cl(G.nrg+5);G.foc=cl(G.foc+5);G.sal=cl(G.sal+5);G.hap=cl(G.hap+5);
+    G._lvMilestone=G.lv;
+  }
+
+  G.lastTick=now;
+}
+
+// Check if action is on cooldown (returns minutes remaining or 0)
+function getCooldown(action){
+  const cd=G.cooldowns[action];
+  if(!cd)return 0;
+  const remaining=(cd-Date.now())/60000;
+  return remaining>0?Math.ceil(remaining):0;
+}
+
+function isNight(){const h=new Date().getHours();return h>=20||h<6;}
+function getDayNum(){return Math.floor((Date.now()-G.created)/86400000)+1;}
+
+// ═══ UI ═══
+function upUI(){
+  G.disc=cl(G.disc);G.nrg=cl(G.nrg);G.foc=cl(G.foc);G.sal=cl(G.sal);G.hap=cl(G.hap);G.gold=Math.max(0,G.gold);
+  const bars=[{b:'dB',v:'dV',val:G.disc},{b:'eB',v:'eV',val:G.nrg},{b:'fB',v:'fV',val:G.foc},{b:'sB',v:'sV',val:G.sal},{b:'hB',v:'hV',val:G.hap}];
+  bars.forEach(d=>{const c=d.val<25?'var(--r)':d.val<50?'var(--gd)':'var(--g)';document.getElementById(d.b).style.width=d.val+'%';document.getElementById(d.b).style.background=c;document.getElementById(d.v).textContent=d.val;document.getElementById(d.v).style.color=c;});
+  const xpPct=Math.floor(G.xp/XP_PER_LV*100);
+  document.getElementById('xB').style.width=xpPct+'%';document.getElementById('xV').textContent=G.xp;
+  document.getElementById('gd').textContent=G.gold+'G';
+  document.getElementById('rk').textContent=STAGES[G.stage].rank;
+  document.getElementById('lv').textContent='LV '+G.lv;
+  document.getElementById('dy').textContent=(isNight()?'NIGHT':'DAY')+' '+getDayNum();
+  document.getElementById('vp').className='vp '+(isNight()?'night':'day');
+  const a=avg();let mood='IDLE',mc='var(--t3)';
+  if(a>=88){mood='SOVEREIGN';mc='var(--gd)';}else if(a>=76){mood='POWERFUL';mc='var(--g)';}else if(a>=62){mood='STRONG';mc='var(--gl3)';}else if(a>=48){mood='GRINDING';mc='var(--pr)';}else if(a>=30){mood='STRUGGLING';mc='var(--gd)';}else if(a>=15){mood='SUFFERING';mc='var(--r)';}else{mood='DYING';mc='var(--r)';}
+  document.getElementById('md').textContent=mood;document.getElementById('md').style.color=mc;
+  // Update class & alignment display
+  const cls=detectClass();const clsData=CLASSES[cls];
+  document.getElementById('classIcon').textContent=clsData.icon;
+  document.getElementById('className').textContent=clsData.name;
+  document.getElementById('classAlign').textContent=detectAlignment();
+  checkEvo();checkAchievements();
+}
+
+function checkEvo(){
+  const a=avg();let t=0;
+  for(let i=THRESH.length-1;i>=0;i--){if(a>=THRESH[i]){t=i;break;}}
+  if(t>G.stage){G.stage=t;drawPet();showEvo();}
+  else if(t<G.stage){G.stage=t;drawPet();notify('DE-EVOLVED...');lo('Stats dropped. Devolved to '+STAGES[G.stage].name+'.','b');}
+}
+
+function showEvo(){
+  const s=STAGES[G.stage];
+  const cls=typeof detectClass==='function'?detectClass():'default';
+  const hasClassSprite=G.stage>=3&&cls!=='default'&&CLASS_SPRITES[cls]&&CLASS_SPRITES[cls][G.stage];
+  const title=hasClassSprite?CLASSES[cls].name+' — '+s.name:s.name;
+  document.getElementById('evT').textContent=title;
+  document.getElementById('evD').textContent=s.desc;
+  const ec=document.getElementById('evC').getContext('2d');ec.imageSmoothingEnabled=false;
+  if(hasClassSprite){
+    D(ec,24,32,CLASS_SPRITES[cls][G.stage].grid,CLASS_SPRITES[cls][G.stage].pal);
+  } else {
+    D(ec,24,32,s.grid,s.pal);
+  }
+  document.getElementById('evo').classList.add('show');
+  lo('EVOLUTION: '+title+'!','s');
+}
+
+function gainXP(amt){
+  G.xp+=amt;
+  while(G.xp>=XP_PER_LV){G.xp-=XP_PER_LV;G.lv++;lo('LEVEL UP! Now LV '+G.lv+' — '+getLvPerk(G.lv),'s');notify('LEVEL UP — LV '+G.lv);}
+}
+
+// Level perks: each level gives tangible bonuses
+function getLvPerk(lv){
+  if(lv%10===0)return 'Milestone! All stats +5';
+  if(lv%5===0)return 'Decay reduced! (-'+(lv*0.5)+'%)';
+  if(lv%3===0)return 'Gold bonus! +'+lv*5+'G';
+  return 'Stat gains +'+Math.floor(lv/2)+'%';
+}
+function getLvBonuses(){
+  const lv=G.lv;
+  return{
+    gainMult:1+Math.floor(lv/2)*0.01, // +1% stat gains per 2 levels
+    decayMult:Math.max(0.5,1-Math.floor(lv/5)*0.005), // -0.5% decay per 5 levels, floor 50%
+    goldBonus:Math.floor(lv/3)*5, // +5 gold per save/sell per 3 levels
+  };
+}
+
+let evbTmr,achTmr,toTmr;
+function notify(m){const t=document.getElementById('evb');t.textContent=m;t.classList.add('show');clearTimeout(evbTmr);evbTmr=setTimeout(()=>t.classList.remove('show'),2000);}
+function showAch(m){const a=document.getElementById('ach');a.textContent='🏆 '+m;a.classList.add('show');clearTimeout(achTmr);achTmr=setTimeout(()=>a.classList.remove('show'),2500);}
+function lo(m,c){const l=document.getElementById('lg');const p=document.createElement('p');if(c)p.className=c;p.textContent=m;l.appendChild(p);l.scrollTop=l.scrollHeight;if(l.children.length>50)l.removeChild(l.firstChild);}
+function emo(e){const el=document.createElement('div');el.className='emo';el.textContent=e;el.style.left=(25+Math.random()*50)+'%';el.style.top='35%';document.getElementById('ef').appendChild(el);setTimeout(()=>el.remove(),1300);}
+
+// ═══ ACHIEVEMENTS ═══
+const ACHS={
+  first_save:{name:'First Deposit',check:()=>G.totalSaved>=1},
+  saver_10:{name:'Disciplined Saver (10x)',check:()=>G.totalSaved>=10},
+  seller_5:{name:'Born Closer (5 sales)',check:()=>G.totalSold>=5},
+  seller_20:{name:'Sales Machine (20 sales)',check:()=>G.totalSold>=20},
+  slept_5:{name:'Sleep Schedule (5x)',check:()=>G.totalSlept>=5},
+  marketer:{name:'Marketing Brain (10x)',check:()=>G.totalMarketed>=10},
+  rich:{name:'5000 Gold Club',check:()=>G.gold>=5000},
+  richer:{name:'20000 Gold Fortress',check:()=>G.gold>=20000},
+  disc_50:{name:'Discipline Over 50',check:()=>G.disc>=50},
+  disc_80:{name:'Iron Will (Disc 80+)',check:()=>G.disc>=80},
+  focus_50:{name:'Laser Focus (50+)',check:()=>G.foc>=50},
+  all_50:{name:'Balanced Warrior',check:()=>G.disc>=50&&G.nrg>=50&&G.foc>=50&&G.sal>=50&&G.hap>=50},
+  brank:{name:'B-Rank Knight',check:()=>G.stage>=3},
+  srank:{name:'S-Rank Sovereign',check:()=>G.stage>=5},
+  no_blow:{name:'Sieve Slayer (50 acts, 0 blows)',check:()=>G.totalActions>=50&&G.totalBlown===0},
+  lv10:{name:'Level 10',check:()=>G.lv>=10},
+  lv25:{name:'Level 25',check:()=>G.lv>=25},
+  streak5:{name:'5x Streak',check:()=>G.streak>=5},
+};
+function checkAchievements(){Object.entries(ACHS).forEach(([k,a])=>{if(!G.achv.has(k)&&a.check()){G.achv.add(k);showAch(a.name);lo('Achievement: '+a.name,'go');gainXP(20);}});}
+
+// ═══ RANDOM EVENTS ═══
+const EVENTS=[
+  {msg:'Sushi knocked your coffee off the desk.',effect:()=>{G.nrg=cl(G.nrg-5);G.hap=cl(G.hap+3);},emoji:'🐱',logCls:'l'},
+  {msg:'A customer left a 5-star review!',effect:()=>{G.hap=cl(G.hap+8);G.gold+=50;},emoji:'⭐',logCls:'go'},
+  {msg:'Unexpected bill arrived.',effect:()=>{G.gold-=80;G.hap=cl(G.hap-4);},emoji:'📄',logCls:'b'},
+  {msg:'Kayla brought you dinner.',effect:()=>{G.nrg=cl(G.nrg+10);G.hap=cl(G.hap+8);},emoji:'🍜',logCls:'g'},
+  {msg:'You found a freelance Shopify gig!',effect:()=>{G.gold+=300;G.foc=cl(G.foc+5);},emoji:'💻',logCls:'go'},
+  {msg:'Instagram algorithm blessed you today.',effect:()=>{G.sal=cl(G.sal+5);G.gold+=80;},emoji:'📱',logCls:'go'},
+  {msg:'MTG Arena update dropped. Temptation...',effect:()=>{G.foc=cl(G.foc-6);G.hap=cl(G.hap+5);},emoji:'🃏',logCls:'b'},
+  {msg:'You got a great night\'s sleep naturally.',effect:()=>{G.nrg=cl(G.nrg+12);},emoji:'🌙',logCls:'g'},
+  {msg:'Compare Club bonus hit your account!',effect:()=>{G.gold+=500;G.hap=cl(G.hap+5);},emoji:'💰',logCls:'go'},
+  {msg:'Builder\'s Trance whispers: "Just one more SVG..."',effect:()=>{G.foc=cl(G.foc-5);G.hap=cl(G.hap+4);},emoji:'🌀',logCls:'b'},
+  {msg:'Sushi fell asleep on your keyboard. Unwanted but wholesome code pushed.',effect:()=>{G.hap=cl(G.hap+6);G.foc=cl(G.foc-2);},emoji:'😸',logCls:'l'},
+  {msg:'A stranger on Reddit praised your pixel art.',effect:()=>{G.hap=cl(G.hap+5);G.sal=cl(G.sal+3);},emoji:'🎨',logCls:'go'},
+  {msg:'Power nap hit different today.',effect:()=>{G.nrg=cl(G.nrg+8);G.foc=cl(G.foc+3);},emoji:'⚡',logCls:'g'},
+  {msg:'You found $20 in your jacket pocket.',effect:()=>{G.gold+=120;G.hap=cl(G.hap+3);},emoji:'🧥',logCls:'go'},
+  {msg:'Kayla wants to watch a movie tonight.',effect:()=>{G.hap=cl(G.hap+6);G.nrg=cl(G.nrg-2);},emoji:'🎬',logCls:'g'},
+  {msg:'Got sucked into a YouTube rabbit hole.',effect:()=>{G.foc=cl(G.foc-7);G.nrg=cl(G.nrg-3);},emoji:'📺',logCls:'b'},
+  {msg:'Morning routine was perfect today.',effect:()=>{G.disc=cl(G.disc+6);G.nrg=cl(G.nrg+4);},emoji:'☀️',logCls:'g'},
+  {msg:'The gym was empty. Perfect session.',effect:()=>{G.disc=cl(G.disc+4);G.hap=cl(G.hap+5);},emoji:'🏋️',logCls:'g'},
+  {msg:'A product broke in production. Hotfix time.',effect:()=>{G.foc=cl(G.foc+5);G.nrg=cl(G.nrg-6);G.hap=cl(G.hap-3);},emoji:'🔥',logCls:'b'},
+  {msg:'Passive income hit while you slept!',effect:()=>{G.gold+=200;G.disc=cl(G.disc+3);},emoji:'💎',logCls:'go'},
+  {msg:'Someone copied your design. Flattering but annoying.',effect:()=>{G.hap=cl(G.hap-3);G.sal=cl(G.sal+2);},emoji:'😤',logCls:'l'},
+  {msg:'Meal prep Sunday saved future you.',effect:()=>{G.disc=cl(G.disc+4);G.gold+=30;G.nrg=cl(G.nrg+3);},emoji:'🥗',logCls:'g'},
+];
+
+// ═══ ACTIONS (real-time cooldowns in minutes) ═══
+function workoutUnlocked(){return (Date.now()-G.created)>=172800000;} // 2 days in ms
+
+function A(type){
+  // Workout locked check
+  if(type==='workout'&&!workoutUnlocked()){
+    const hrsLeft=Math.ceil((172800000-(Date.now()-G.created))/3600000);
+    notify('WORKOUT UNLOCKS IN '+hrsLeft+' HOURS');return;
+  }
+  // Budget - opens prompt
+  if(type==='budget'){openBudgetQuest();return;}
+
+  const cdLeft=getCooldown(type);
+  if(cdLeft>0){notify(type.toUpperCase()+': '+cdLeft+'m COOLDOWN');return;}
+
+  G.totalActions++;
+  if(type===G.lastAct){G.streak++;}else{G.streak=1;G.lastAct=type;}
+  const bonus=G.streak>=3?1.3:1;
+  const B=getClassBonuses();
+  const L=getLvBonuses();
+  const m=B.allGainMult*L.gainMult;
+  const gBonus=L.goldBonus;
+  G.cooldowns[type]=Date.now()+COOLDOWNS[type]*60000*(type==='workout'?B.workoutCdMult:1);
+
+  switch(type){
+    case'sleep':G.nrg=cl(G.nrg+(16+B.sleepNrgBonus)*bonus*m);G.disc=cl(G.disc+4*bonus*m);G.foc=cl(G.foc+3*m);G.totalSlept++;emo('💤');lo('Slept well. +Energy. ('+COOLDOWNS.sleep+'m cd)','g');gainXP(5);break;
+    case'save':const sv=Math.floor((50+G.disc*2.5+gBonus)*bonus);G.gold+=sv;G.disc=cl(G.disc+(8+B.saveDiscBonus)*bonus*m);G.hap=cl(G.hap-1);G.totalSaved++;emo('💰');lo('Saved '+sv+'G. ('+COOLDOWNS.save+'m cd)','go');gainXP(8);break;
+    case'market':G.foc=cl(G.foc+10*bonus*m);G.nrg=cl(G.nrg-3);G.disc=cl(G.disc+3*m);G.sal=cl(G.sal+2*m);G.totalMarketed++;emo('📣');lo('Marketing done. ('+COOLDOWNS.market+'m cd)','g');gainXP(7);break;
+    case'sell':const ea=Math.floor((80+G.sal*3+gBonus)*bonus*B.sellBonus);G.gold+=ea;G.sal=cl(G.sal+3*m);G.nrg=cl(G.nrg-4);G.hap=cl(G.hap+5);G.totalSold++;emo('🤝');lo('Deal closed! +'+ea+'G. ('+COOLDOWNS.sell+'m cd)','go');gainXP(6);break;
+    case'train':G.disc=cl(G.disc+(5+B.trainAllBonus)*bonus*m);G.foc=cl(G.foc+(5+B.trainAllBonus)*bonus*m);G.sal=cl(G.sal+(3+B.trainAllBonus)*m);G.nrg=cl(G.nrg-6);G.totalTrained=(G.totalTrained||0)+1;emo('⚔️');lo('Trained hard. ('+COOLDOWNS.train+'m cd)','g');gainXP(10);break;
+    case'build':G.hap=cl(G.hap+(12+B.buildHapBonus)*m);G.foc=cl(G.foc-4);G.nrg=cl(G.nrg-1);G.totalBuilt=(G.totalBuilt||0)+1;emo('🔨');lo('Built something. Focus slipped.','l');if(G.foc<20)lo('⚠ Builder\'s Trance...','b');gainXP(4);break;
+    case'date':G.hap=cl(G.hap+(15+B.dateHapBonus)*m);G.nrg=cl(G.nrg+6*m);G.sal=cl(G.sal+2*m);G.totalDates=(G.totalDates||0)+1;emo('💕');lo('Date with Kayla. ('+COOLDOWNS.date+'m cd)','g');gainXP(5);break;
+    case'workout':
+      const woCdMin=Math.round(COOLDOWNS.workout*B.workoutCdMult);
+      G.nrg=cl(G.nrg-8);G.disc=cl(G.disc+10*bonus*m);G.hap=cl(G.hap+7*m);G.foc=cl(G.foc+3*m);G.totalWorkouts++;
+      emo('💪');lo('Workout done! ('+Math.round(woCdMin/60)+'hr cd)','g');gainXP(12);
+      if(!G.quests.first_workout){G.quests.first_workout=true;showAch('First Workout!');lo('Quest: First Workout!','go');gainXP(25);}
+      if(G.totalWorkouts>=3&&!G.quests.workout_3){G.quests.workout_3=true;showAch('3 Workouts!');lo('Quest: 3 Workouts!','go');gainXP(40);}
+      break;
+    case'blow':
+      const blowAmt=Math.floor(50+Math.random()*150);
+      G.gold=Math.max(0,G.gold-blowAmt);G.hap=cl(G.hap+12);G.disc=cl(G.disc-8);G.foc=cl(G.foc-3);
+      G.totalBlown=(G.totalBlown||0)+1;
+      emo('💸');lo('Blew '+blowAmt+'G on impulse. The Sieve feeds. ('+COOLDOWNS.blow+'m cd)','b');
+      if(G.disc<15)lo('The Gilded Sieve laughs...','b');
+      gainXP(1);break;
+  }
+
+  document.getElementById('pet').style.transform='translateY(-5px)';
+  setTimeout(()=>{document.getElementById('pet').style.transform='';},150);
+  upUI();saveGame();updateButtonStates();
+}
+
+// ═══ SPENDING LOG ═══
+function openSpendLog(){
+  // Show recent history
+  const hist=document.getElementById('spendHistory');
+  hist.innerHTML='';
+  const recent=G.spendLog.slice(-5).reverse();
+  if(recent.length){
+    recent.forEach(e=>{
+      const d=document.createElement('div');
+      d.className='spend-entry'+(e.amt===0?' good':'');
+      const date=new Date(e.ts);
+      const dateStr=date.toLocaleDateString('en-AU',{day:'numeric',month:'short'});
+      d.innerHTML=dateStr+': <b>$'+e.amt+'</b>'+(e.amt===0?' — clean day!':'');
+      hist.appendChild(d);
+    });
+  } else {
+    hist.textContent='No spending logged yet.';
+  }
+  document.getElementById('spendAmt').value='';
+  document.getElementById('spendScr').classList.add('show');
+}
+
+function submitSpend(){
+  const input=document.getElementById('spendAmt');
+  const amt=Math.max(0,Math.round(Number(input.value)||0));
+
+  G.spendLog.push({amt,ts:Date.now()});
+
+  // Effects based on amount
+  if(amt===0){
+    G.disc=cl(G.disc+10);G.hap=cl(G.hap+3);
+    emo('🌟');lo('$0 spent today! Discipline +10. Clean day.','g');gainXP(15);
+    if(!G.quests.zero_spend_day){G.quests.zero_spend_day=true;showAch('Zero Spend Day!');gainXP(30);}
+  } else if(amt<=30){
+    G.disc=cl(G.disc+3);G.gold-=amt;
+    emo('👍');lo('$'+amt+' logged. Reasonable. Disc +3.','g');gainXP(5);
+  } else if(amt<=80){
+    G.disc=cl(G.disc-3);G.gold-=amt;G.hap=cl(G.hap+4);
+    emo('😬');lo('$'+amt+' logged. Creeping up. Disc -3.','b');gainXP(2);
+  } else {
+    G.disc=cl(G.disc-10);G.gold-=amt;G.hap=cl(G.hap+6);
+    emo('💸');lo('$'+amt+' logged. The Sieve wins today. Disc -10.','b');
+    if(G.disc<15)lo('The Gilded Sieve laughs...','b');
+    gainXP(1);
+  }
+
+  // Check budget compliance if budget is set
+  if(G.budgetSet&&G.dailyBudget>0){
+    if(amt<=G.dailyBudget){
+      lo('Within budget ($'+G.dailyBudget+'/day). +2 Disc.','g');
+      G.disc=cl(G.disc+2);
+    } else {
+      lo('Over budget by $'+(amt-G.dailyBudget)+'. -3 Disc.','b');
+      G.disc=cl(G.disc-3);
+    }
+  }
+
+  document.getElementById('spendScr').classList.remove('show');
+  upUI();saveGame();
+}
+
+// ═══ BUDGET QUEST ═══
+function openBudgetQuest(){
+  if(G.budgetSet){
+    notify('BUDGET SET: $'+G.dailyBudget+'/DAY');
+    lo('Your daily budget is $'+G.dailyBudget+'. Log spending to track it.','s');
+    return;
+  }
+  const amt=prompt('Set your daily non-essential spending budget.\nThis is the max you allow yourself per day on takeaway, MTG, gear, etc.\n\nEnter amount in $:');
+  if(amt===null)return;
+  const budget=Math.max(0,Math.round(Number(amt)));
+  if(budget<=0){notify('INVALID BUDGET');return;}
+
+  G.dailyBudget=budget;G.budgetSet=true;
+  G.disc=cl(G.disc+15);G.foc=cl(G.foc+10);
+  G.quests.budget=true;
+  emo('📋');
+  lo('Budget set: $'+budget+'/day! Discipline +15, Focus +10.','go');
+  notify('QUEST COMPLETE: BUDGET SET');
+  gainXP(30);
+  upUI();saveGame();
+}
+
+// ═══ QUEST LOG ═══
+function openQuestLog(){
+  const ql=document.getElementById('questList');
+  ql.innerHTML='';
+  const dayNum=getDayNum();
+  const woUnlocked=workoutUnlocked();
+  const woHrsLeft=Math.max(0,Math.ceil((172800000-(Date.now()-G.created))/3600000));
+
+  const quests=[
+    {name:'Set a Daily Budget',desc:'Set your non-essential spending limit.',done:G.quests.budget,locked:false},
+    {name:'Log a Zero-Spend Day',desc:'Log $0 in non-essential spending.',done:G.quests.zero_spend_day,locked:false},
+    {name:'First Workout',desc:'Complete your first workout.'+(woUnlocked?'':' Unlocks in '+woHrsLeft+'hrs.'),done:G.quests.first_workout,locked:!woUnlocked},
+    {name:'3 Workouts Complete',desc:'Build the exercise habit.',done:G.quests.workout_3,locked:!woUnlocked},
+    {name:'Sleep 7 Times',desc:'Hit sleep 7 times total.',done:G.quests.sleep_7||false,locked:false},
+    {name:'Save 10 Times',desc:'Consistent saving habit.',done:G.achv.has('saver_10'),locked:false},
+    {name:'Market 5 Times',desc:'Apply sales brain to LW.',done:G.quests.market_5||false,locked:false},
+    {name:'Reach D-Rank',desc:'Average stats above 30.',done:G.stage>=1,locked:false},
+    {name:'Reach B-Rank Knight',desc:'Evolve to the full knight.',done:G.stage>=3,locked:false},
+    {name:'Reach S-Rank Sovereign',desc:'The final evolution. Freedom.',done:G.stage>=5,locked:false},
+    {name:'5,000 Gold Saved',desc:'First real financial cushion.',done:G.gold>=5000||G.achv.has('rich'),locked:false},
+    {name:'All Stats Above 50',desc:'The balanced warrior.',done:G.achv.has('all_50'),locked:false},
+  ];
+
+  quests.forEach(q=>{
+    const d=document.createElement('div');
+    d.className='qi'+(q.done?' done':'')+(q.locked?' locked':'');
+    d.innerHTML=`<div class="qk"></div><div><div class="qn">${q.name}</div><div class="qd">${q.desc}</div></div>`;
+    ql.appendChild(d);
+  });
+
+  document.getElementById('questScr').classList.add('show');
+}
+
+// Track quest milestones on every UI update
+function checkQuestMilestones(){
+  if(G.totalSlept>=7&&!G.quests.sleep_7){G.quests.sleep_7=true;showAch('Sleep Schedule (7x)!');lo('Quest: Sleep 7 times complete!','go');gainXP(25);}
+  if(G.totalMarketed>=5&&!G.quests.market_5){G.quests.market_5=true;showAch('Marketing Brain (5x)!');lo('Quest: Market 5 times complete!','go');gainXP(25);}
+  if(G.stage>=1&&!G.quests.evolved_once){G.quests.evolved_once=true;gainXP(20);}
+}
+
+// ═══ REAL-TIME TICK (checks every 30s, applies hourly decay) ═══
+function tick(){
+  applyDecay();
+
+  // Random event every ~1.5 hours
+  const hrsSinceEvent=(Date.now()-G.lastEvent)/3600000;
+  if(hrsSinceEvent>=1.5&&Math.random()<0.5){
+    const ev=EVENTS[Math.floor(Math.random()*EVENTS.length)];
+    ev.effect();emo(ev.emoji);lo(ev.msg,ev.logCls);
+    G.lastEvent=Date.now();
+  }
+
+  // Warnings (only if stats critical)
+  if(G.nrg<15)lo('Energy getting low...','b');
+  if(G.disc<10)lo('Discipline crumbling... gold leaking...','b');
+
+  upUI();saveGame();updateButtonStates();
+}
+
+// Update button disabled states based on cooldowns
+function updateButtonStates(){
+  // Update ALL action buttons with proper cooldown display
+  document.querySelectorAll('.ab[onclick]').forEach(btn=>{
+    const match=btn.getAttribute('onclick').match(/A\('(\w+)'\)/);
+    if(!match)return;
+    const action=match[1];
+    const sub=btn.querySelector('.su');
+    if(!sub)return;
+
+    if(action==='workout'){
+      const woUnlocked=workoutUnlocked();
+      if(!woUnlocked){
+        btn.disabled=true;
+        const hrsLeft=Math.max(0,Math.ceil((172800000-(Date.now()-G.created))/3600000));
+        sub.textContent='UNLOCKS: '+hrsLeft+'h';
+        return;
+      }
+    }
+
+    if(action==='budget'){
+      if(G.budgetSet)sub.textContent='$'+G.dailyBudget+'/DAY';
+      btn.disabled=false;
+      return;
+    }
+
+    const cd=getCooldown(action);
+    if(cd>0){
+      btn.disabled=true;
+      sub.textContent=cd>=60?Math.ceil(cd/60)+'h CD':cd+'m CD';
+    } else {
+      btn.disabled=false;
+      // Restore default labels
+      const labels={sleep:'+NRG +DISC',save:'+DISC +GOLD',market:'+FOCUS +DISC',sell:'+GOLD +SAL',
+        train:'+ALL -NRG',build:'+HAP -FOC',date:'+HAP +NRG',workout:'+DISC +HAP +FOC'};
+      sub.textContent=labels[action]||sub.textContent;
+    }
+  });
+
+  // Show streak indicator
+  if(G.streak>=2){
+    const streakMsg=G.streak>=3?'🔥 '+G.streak+'x STREAK (+30% bonus!)':'⚡ '+G.streak+'x streak (3x for bonus)';
+    const existing=document.getElementById('streakInd');
+    if(existing)existing.textContent=streakMsg;
+  } else {
+    const existing=document.getElementById('streakInd');
+    if(existing)existing.textContent='';
+  }
+
+  checkQuestMilestones();
+}
+
+// Run tick every 30 seconds
+setInterval(tick,30000);
+// Also run on visibility change (when user comes back to tab)
+document.addEventListener('visibilitychange',()=>{if(!document.hidden){tick();}});
+
+// ═══ IDLE BOB + SUSHI ANIMATION ═══
+// FF-style breathing animation — alternates between 2 frames
+setInterval(()=>{
+  animFrame=animFrame===0?1:0;
+  const pet=document.getElementById('pet');
+  // Subtle body bob like FF6 idle stance
+  pet.style.transform=animFrame===0?'':'translateY(-1px)';
+},800);
+// Sushi tail wag
+let catF=false;
+setInterval(()=>{catF=!catF;document.getElementById('sushi').style.transform=catF?'scaleX(-1) translateY(-1px)':'';},1200);
+
+// ═══ STARS ═══
+const vp=document.getElementById('vp');
+for(let i=0;i<18;i++){const s=document.createElement('div');s.className='star';s.style.left=Math.random()*100+'%';s.style.top=Math.random()*50+'%';s.style.setProperty('--d',(2+Math.random()*4)+'s');s.style.animationDelay=Math.random()*3+'s';vp.appendChild(s);}
+
+// ═══ INIT ═══
+// Apply any decay that happened while away
+applyDecay();
+drawPet();drawCat();upUI();updateButtonStates();
+
+const hrsAway=Math.floor((Date.now()-(G.lastTick||Date.now()))/3600000);
+if(hrsAway>0){
+  lo('You were away for ~'+hrsAway+' hours. Stats decayed.','s');
+}
+lo('System active. Day '+getDayNum()+'. You are '+STAGES[G.stage].rank+'-Rank.','s');
+lo('"Purpose without structure is just enthusiasm on a timer."','l');
+saveGame();
+</script>
+</body>
+</html>
