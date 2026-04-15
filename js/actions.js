@@ -56,10 +56,27 @@ export function openBudgetQuest() {
     if (_logMessage) _logMessage('Your daily budget is $' + G.dailyBudget + '. Log spending to track it.', 's');
     return;
   }
-  const amt = prompt('Set your daily non-essential spending budget.\nThis is the max you allow yourself per day on takeaway, MTG, gear, etc.\n\nEnter amount in $:');
-  if (amt === null) return;
-  const budget = Math.max(0, Math.round(Number(amt)));
-  if (budget <= 0) { if (_notify) _notify('INVALID BUDGET'); return; }
+  // Use custom modal overlay instead of prompt()
+  const overlay = document.getElementById('budgetOverlay');
+  const input = document.getElementById('budgetAmount');
+  if (!overlay || !input) return;
+  input.value = '';
+  overlay.classList.add('show');
+}
+
+export function submitBudget() {
+  const G = state.G;
+  const input = document.getElementById('budgetAmount');
+  const overlay = document.getElementById('budgetOverlay');
+  if (!input) return;
+
+  const budget = Math.max(0, Math.round(Number(input.value) || 0));
+  if (budget <= 0) {
+    if (_notify) _notify('INVALID BUDGET — enter a number > 0');
+    return;
+  }
+
+  if (overlay) overlay.classList.remove('show');
 
   G.dailyBudget = budget;
   G.budgetSet = true;

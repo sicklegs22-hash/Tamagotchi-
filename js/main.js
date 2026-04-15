@@ -11,7 +11,7 @@ import { playSound } from './sound.js';
 import { getSeasonInfo } from './seasons.js';
 import { initAchievements, checkAchievements } from './achievements.js';
 import { initQuests, openQuestLog, checkQuestMilestones } from './quests.js';
-import { initActions, performAction, workoutUnlocked, runRandomEvent } from './actions.js';
+import { initActions, performAction, workoutUnlocked, runRandomEvent, openBudgetQuest, submitBudget } from './actions.js';
 import { initSpending, openSpendLog, submitSpend } from './spending.js';
 import { openHistoryScreen } from './history.js';
 
@@ -57,6 +57,8 @@ function handleButtonClick(action) {
     openSpendLog();
   } else if (action === 'quests') {
     openQuestLog();
+  } else if (action === 'budget') {
+    openBudgetQuest();
   } else {
     performAction(action);
   }
@@ -77,6 +79,8 @@ const closeMap = {
   evoCloseBtn: 'evoOverlay',
   seasonCloseBtn: 'seasonOverlay',
   historyCloseBtn: 'historyOverlay',
+  budgetCancelBtn: 'budgetOverlay',
+  budgetConfirmBtn: null, // handled separately
 };
 
 Object.entries(closeMap).forEach(([btnId, overlayId]) => {
@@ -92,6 +96,10 @@ Object.entries(closeMap).forEach(([btnId, overlayId]) => {
 // Spend submit
 const spendSubmitBtn = document.getElementById('spendSubmitBtn');
 if (spendSubmitBtn) spendSubmitBtn.addEventListener('click', () => submitSpend());
+
+// Budget confirm
+const budgetConfirmBtn = document.getElementById('budgetConfirmBtn');
+if (budgetConfirmBtn) budgetConfirmBtn.addEventListener('click', () => submitBudget());
 
 // Class bar click
 const classBar = document.getElementById('classBar');

@@ -213,6 +213,23 @@
       <button class="overlay-btn" id="seasonCloseBtn">ARISE AGAIN</button>
     </div>
 
+    <!-- Budget Input Modal -->
+    <div class="overlay" id="budgetOverlay">
+      <div class="overlay-kr">예산 설정</div>
+      <h2 class="overlay-title">SET DAILY BUDGET</h2>
+      <p class="overlay-desc">Set your daily non-essential spending limit.<br>Takeaway, MTG, gear, nights out, impulse buys.</p>
+      <div class="spend-input-row">
+        <span class="spend-dollar">$</span>
+        <input type="number" id="budgetAmount" placeholder="30" min="0">
+        <span style="font-family:'Rajdhani',sans-serif;font-size:12px;color:var(--t3);margin-left:4px">/day</span>
+      </div>
+      <p class="overlay-hint">+15 Discipline, +10 Focus on setting.</p>
+      <div class="overlay-buttons">
+        <button class="overlay-btn" id="budgetConfirmBtn">SET BUDGET</button>
+        <button class="overlay-btn overlay-btn-cancel" id="budgetCancelBtn">CANCEL</button>
+      </div>
+    </div>
+
     <!-- History Screen -->
     <div class="overlay" id="historyOverlay">
       <div class="overlay-kr">기록</div>

@@ -1,5 +1,6 @@
 // ═══ STATE MODULE ═══
 export const SAVE_KEY = 'arise_pet_v1';
+export const LOCALE = 'en-AU'; // Date formatting locale
 export const XP_PER_LV = 100;
 export const THRESH = [0, 30, 48, 62, 76, 88];
 export const DECAY_PER_HR = { disc: 0.5, nrg: 0.8, foc: 0.4, sal: 0.15, hap: 0.4, gold: 8 };

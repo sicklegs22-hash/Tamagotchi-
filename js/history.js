@@ -1,5 +1,5 @@
 // ═══ HISTORY MODULE ═══
-import { state, getDayNum } from './state.js';
+import { state, getDayNum, LOCALE } from './state.js';
 import { STAGES } from './sprites.js';
 
 export function openHistoryScreen() {
@@ -41,7 +41,7 @@ export function openHistoryScreen() {
   if (G.spendLog && G.spendLog.length > 0) {
     html += '<div class="history-section"><div class="history-label">RECENT SPENDING</div>';
     G.spendLog.slice(-10).reverse().forEach(e => {
-      const date = new Date(e.ts).toLocaleDateString('en-AU', { day: 'numeric', month: 'short' });
+      const date = new Date(e.ts).toLocaleDateString(LOCALE, { day: 'numeric', month: 'short' });
       const cls = e.amt === 0 ? ' style="color:var(--g)"' : e.amt > 80 ? ' style="color:var(--r)"' : '';
       html += `<div class="history-row"${cls}><span>${date}</span><span>$${e.amt}</span></div>`;
     });

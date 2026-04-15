@@ -1,5 +1,5 @@
 // ═══ SPENDING MODULE ═══
-import { state, cl, saveGame } from './state.js';
+import { state, cl, saveGame, LOCALE } from './state.js';
 
 let _logMessage = null;
 let _spawnEmoji = null;
@@ -26,7 +26,7 @@ export function openSpendLog() {
         const d = document.createElement('div');
         d.className = 'spend-entry' + (e.amt === 0 ? ' good' : '');
         const date = new Date(e.ts);
-        const dateStr = date.toLocaleDateString('en-AU', { day: 'numeric', month: 'short' });
+        const dateStr = date.toLocaleDateString(LOCALE, { day: 'numeric', month: 'short' });
         d.innerHTML = dateStr + ': <b>$' + e.amt + '</b>' + (e.amt === 0 ? ' — clean day!' : '');
         hist.appendChild(d);
       });

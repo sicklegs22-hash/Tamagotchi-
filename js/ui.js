@@ -1,5 +1,5 @@
 // ═══ UI MODULE ═══
-import { state, avg, getDayNum, isNight, getCooldown, cl, XP_PER_LV } from './state.js';
+import { state, avg, getDayNum, isNight, getCooldown, cl, XP_PER_LV, LOCALE } from './state.js';
 import { STAGES } from './sprites.js';
 import { CLASSES, detectClass, detectAlignment, getAlignmentDesc } from './classes.js';
 import { getSeasonInfo, checkSeasonReset } from './seasons.js';
@@ -109,7 +109,7 @@ export function updateUI(detectClassOverride) {
   const prestigeLabel = document.getElementById('prestigeLabel');
   if (seasonLabel) seasonLabel.textContent = 'SEASON ' + (si.season + 1);
   if (seasonDays) seasonDays.textContent = '— ' + si.daysLeft + ' DAYS LEFT';
-  if (prestigeLabel) prestigeLabel.textContent = si.season > 0 ? si.season + '× PRESTIGE' : '';
+  if (prestigeLabel) prestigeLabel.textContent = si.season > 0 ? si.season + '\u00d7 PRESTIGE' : '';
 
   checkSeasonReset();
   checkEvo();
