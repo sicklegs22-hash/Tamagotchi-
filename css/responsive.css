@@ -1,0 +1,41 @@
+/* ═══ RESPONSIVE CSS ═══ */
+
+/* Mobile — narrow screens */
+@media (max-width: 420px) {
+  .shell { max-width: 100%; }
+
+  #petCanvas {
+    width: 120px;
+    height: 160px;
+  }
+
+  .viewport { height: 110px; }
+
+  .btn-name { font-size: 6px; letter-spacing: 0.5px; }
+  .btn-hint { font-size: 7px; }
+  .btn-icon { font-size: 14px; }
+  .action-btn { min-height: 52px; padding: 6px 3px; }
+
+  .char-name { font-size: 10px; letter-spacing: 2px; }
+  .gold-display { font-size: 10px; }
+
+  .stat-row label { font-size: 9px; width: 58px; }
+  .stat-val { font-size: 9px; }
+}
+
+/* Very small screens */
+@media (max-width: 350px) {
+  .actions-grid { grid-template-columns: repeat(3, 1fr); }
+
+  #sushiCanvas { display: none; }
+
+  .header { padding: 8px; gap: 6px; }
+  .char-name { display: none; }
+}
+
+/* Larger mobile / tablet — center with border glow */
+@media (min-width: 421px) {
+  .shell {
+    box-shadow: 0 0 40px rgba(58,143,255,0.08), 0 0 80px rgba(58,143,255,0.04);
+  }
+}

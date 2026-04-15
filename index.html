@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+  <title>ARISE PET</title>
+  <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&family=Orbitron:wght@400;500;700&family=Noto+Sans+KR:wght@300;400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/main.css">
+  <link rel="stylesheet" href="css/stats.css">
+  <link rel="stylesheet" href="css/viewport.css">
+  <link rel="stylesheet" href="css/buttons.css">
+  <link rel="stylesheet" href="css/overlays.css">
+  <link rel="stylesheet" href="css/responsive.css">
+</head>
+<body>
+  <div class="shell" id="shell">
+
+    <!-- Header -->
+    <div class="header">
+      <div class="rank-badge" id="rankBadge">E</div>
+      <div class="char-name">SIR BAP</div>
+      <div class="level-display" id="levelDisplay">LV 1</div>
+      <div class="gold-display" id="goldDisplay">600G</div>
+      <div class="day-display" id="dayDisplay">DAY 1</div>
+    </div>
+
+    <!-- Class bar -->
+    <div class="class-bar" id="classBar">
+      <span class="class-icon" id="classIcon">⚒</span>
+      <span class="class-name" id="className">WANDERER</span>
+      <span class="class-align" id="classAlign">True Neutral</span>
+      <span class="class-arrow">▸</span>
+    </div>
+
+    <!-- Season bar -->
+    <div class="season-bar">
+      <span class="season-label" id="seasonLabel">SEASON 1</span>
+      <span class="season-days" id="seasonDays">— 90 DAYS LEFT</span>
+      <span class="prestige-label" id="prestigeLabel"></span>
+    </div>
+
+    <!-- Stats -->
+    <div class="stats-panel">
+      <div class="stat-row">
+        <label>Discipline</label>
+        <div class="stat-track"><div class="stat-fill disc-fill" id="discBar" style="width:20%"></div></div>
+        <div class="stat-val disc-val" id="discVal">20</div>
+      </div>
+      <div class="stat-row">
+        <label>Energy</label>
+        <div class="stat-track"><div class="stat-fill nrg-fill" id="nrgBar" style="width:65%"></div></div>
+        <div class="stat-val nrg-val" id="nrgVal">65</div>
+      </div>
+      <div class="stat-row">
+        <label>Focus</label>
+        <div class="stat-track"><div class="stat-fill foc-fill" id="focBar" style="width:30%"></div></div>
+        <div class="stat-val foc-val" id="focVal">30</div>
+      </div>
+      <div class="stat-row">
+        <label>Sales</label>
+        <div class="stat-track"><div class="stat-fill sal-fill" id="salBar" style="width:80%"></div></div>
+        <div class="stat-val sal-val" id="salVal">80</div>
+      </div>
+      <div class="stat-row">
+        <label>Happiness</label>
+        <div class="stat-track"><div class="stat-fill hap-fill" id="hapBar" style="width:55%"></div></div>
+        <div class="stat-val hap-val" id="hapVal">55</div>
+      </div>
+      <div class="stat-row">
+        <label>XP</label>
+        <div class="stat-track"><div class="stat-fill xp-fill" id="xpBar" style="width:0%"></div></div>
+        <div class="stat-val xp-val" id="xpVal">0</div>
+      </div>
+    </div>
+
+    <!-- Viewport -->
+    <div class="viewport day" id="viewport">
+      <canvas id="petCanvas" width="24" height="32"></canvas>
+      <canvas id="sushiCanvas" width="8" height="8"></canvas>
+      <div class="pet-shadow"></div>
+      <div class="mood-text" id="moodText">IDLE</div>
+      <div class="effects-layer" id="effectsLayer"></div>
+    </div>
+
+    <!-- Notification banner -->
+    <div class="event-banner" id="eventBanner"></div>
+
+    <!-- Achievement popup -->
+    <div class="achievement-popup" id="achievementPopup"></div>
+
+    <!-- Activity log -->
+    <div class="activity-log" id="activityLog"></div>
+
+    <!-- Streak indicator -->
+    <div class="streak-indicator" id="streakIndicator"></div>
+
+    <!-- Actions grid -->
+    <div class="actions-grid">
+      <button class="action-btn" data-action="sleep">
+        <span class="btn-icon">😴</span>
+        <span class="btn-name">Sleep</span>
+        <span class="btn-hint">+NRG +DISC</span>
+      </button>
+      <button class="action-btn" data-action="save">
+        <span class="btn-icon">🏦</span>
+        <span class="btn-name">Save</span>
+        <span class="btn-hint">+DISC +GOLD</span>
+      </button>
+      <button class="action-btn" data-action="market">
+        <span class="btn-icon">📣</span>
+        <span class="btn-name">Market</span>
+        <span class="btn-hint">+FOCUS</span>
+      </button>
+      <button class="action-btn" data-action="sell">
+        <span class="btn-icon">🤝</span>
+        <span class="btn-name">Sell</span>
+        <span class="btn-hint">+GOLD +SAL</span>
+      </button>
+      <button class="action-btn" data-action="train">
+        <span class="btn-icon">⚔️</span>
+        <span class="btn-name">Train</span>
+        <span class="btn-hint">+ALL -NRG</span>
+      </button>
+      <button class="action-btn" data-action="build">
+        <span class="btn-icon">🔨</span>
+        <span class="btn-name">Build</span>
+        <span class="btn-hint">+HAP -FOC</span>
+      </button>
+      <button class="action-btn" data-action="date">
+        <span class="btn-icon">💕</span>
+        <span class="btn-name">Date</span>
+        <span class="btn-hint">+HAP +NRG</span>
+      </button>
+      <button class="action-btn" data-action="logspend">
+        <span class="btn-icon">💸</span>
+        <span class="btn-name">Log $</span>
+        <span class="btn-hint">LOG SPENDING</span>
+      </button>
+      <button class="action-btn" data-action="workout" id="workoutBtn">
+        <span class="btn-icon">💪</span>
+        <span class="btn-name">Workout</span>
+        <span class="btn-hint">LOCKED</span>
+      </button>
+      <button class="action-btn" data-action="blow">
+        <span class="btn-icon">🎰</span>
+        <span class="btn-name">Blow $</span>
+        <span class="btn-hint">+HAP -GOLD</span>
+      </button>
+      <button class="action-btn" data-action="budget">
+        <span class="btn-icon">📋</span>
+        <span class="btn-name">Budget</span>
+        <span class="btn-hint">+DISC +FOC</span>
+      </button>
+      <button class="action-btn" data-action="quests">
+        <span class="btn-icon">📜</span>
+        <span class="btn-name">Quests</span>
+        <span class="btn-hint">VIEW QUESTS</span>
+      </button>
+    </div>
+
+    <!-- ═══ OVERLAYS ═══ -->
+
+    <!-- Spending Log -->
+    <div class="overlay" id="spendOverlay">
+      <div class="overlay-kr">지출 기록</div>
+      <h2 class="overlay-title">LOG SPENDING</h2>
+      <p class="overlay-desc">How much on non-essentials today? (takeaway, MTG, gear, nights out)</p>
+      <div class="spend-input-row">
+        <span class="spend-dollar">$</span>
+        <input type="number" id="spendAmount" placeholder="0" min="0">
+      </div>
+      <p class="overlay-hint">$0 = perfect day (+10 Disc)<br>$1-30 = reasonable<br>$50+ = Discipline penalty</p>
+      <div class="overlay-buttons">
+        <button class="overlay-btn" id="spendSubmitBtn">LOG IT</button>
+        <button class="overlay-btn overlay-btn-cancel" id="spendCancelBtn">CANCEL</button>
+      </div>
+      <div class="spend-history" id="spendHistory"></div>
+    </div>
+
+    <!-- Quest Log -->
+    <div class="overlay" id="questOverlay">
+      <div class="overlay-kr">퀘스트</div>
+      <h2 class="overlay-title">QUEST LOG</h2>
+      <div class="quest-list" id="questList"></div>
+      <button class="overlay-btn" id="questCloseBtn" style="margin-top:16px">CLOSE</button>
+    </div>
+
+    <!-- Class Info -->
+    <div class="overlay" id="classOverlay">
+      <div class="overlay-kr">클래스 정보</div>
+      <h2 class="overlay-title" id="classInfoTitle">CLASS INFO</h2>
+      <div class="class-icon-large" id="classInfoIcon"></div>
+      <p class="overlay-desc" id="classInfoDesc"></p>
+      <div class="class-info-sections" id="classInfoSections"></div>
+      <button class="overlay-btn" id="classCloseBtn" style="margin-top:16px">CLOSE</button>
+    </div>
+
+    <!-- Evolution -->
+    <div class="overlay" id="evoOverlay">
+      <div class="overlay-kr">시스템 알림 — 진화</div>
+      <h2 class="overlay-title" id="evoTitle">EVOLUTION</h2>
+      <canvas id="evoCanvas" width="24" height="32"></canvas>
+      <p class="overlay-desc" id="evoDesc"></p>
+      <button class="overlay-btn" id="evoCloseBtn">ARISE</button>
+    </div>
+
+    <!-- Season Reset -->
+    <div class="overlay" id="seasonOverlay">
+      <div class="overlay-kr">시즌 리셋</div>
+      <h2 class="overlay-title" id="seasonTitle">SEASON RESET</h2>
+      <div style="font-size:40px;margin:12px 0">💀</div>
+      <p class="overlay-desc" id="seasonDesc"></p>
+      <button class="overlay-btn" id="seasonCloseBtn">ARISE AGAIN</button>
+    </div>
+
+    <!-- Budget Input Modal -->
+    <div class="overlay" id="budgetOverlay">
+      <div class="overlay-kr">예산 설정</div>
+      <h2 class="overlay-title">SET DAILY BUDGET</h2>
+      <p class="overlay-desc">Set your daily non-essential spending limit.<br>Takeaway, MTG, gear, nights out, impulse buys.</p>
+      <div class="spend-input-row">
+        <span class="spend-dollar">$</span>
+        <input type="number" id="budgetAmount" placeholder="30" min="0">
+        <span style="font-family:'Rajdhani',sans-serif;font-size:12px;color:var(--t3);margin-left:4px">/day</span>
+      </div>
+      <p class="overlay-hint">+15 Discipline, +10 Focus on setting.</p>
+      <div class="overlay-buttons">
+        <button class="overlay-btn" id="budgetConfirmBtn">SET BUDGET</button>
+        <button class="overlay-btn overlay-btn-cancel" id="budgetCancelBtn">CANCEL</button>
+      </div>
+    </div>
+
+    <!-- History Screen -->
+    <div class="overlay" id="historyOverlay">
+      <div class="overlay-kr">기록</div>
+      <h2 class="overlay-title">HISTORY</h2>
+      <div class="history-content" id="historyContent"></div>
+      <button class="overlay-btn" id="historyCloseBtn" style="margin-top:16px">CLOSE</button>
+    </div>
+
+  </div>
+  <script type="module" src="js/main.js"></script>
+</body>
+</html>

@@ -1,0 +1,111 @@
+/* ═══ VIEWPORT CSS ═══ */
+
+.viewport {
+  position: relative;
+  height: 130px;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  gap: 16px;
+  overflow: hidden;
+  transition: background 1s ease;
+}
+
+.viewport.day {
+  background: linear-gradient(180deg, #1a3060 0%, #2a4878 40%, #1a2848 100%);
+}
+
+.viewport.night {
+  background: linear-gradient(180deg, #05050e 0%, #0a1028 40%, #050510 100%);
+}
+
+/* Pixel art canvas — sharp rendering */
+#petCanvas {
+  width: 144px;
+  height: 192px;
+  image-rendering: pixelated;
+  image-rendering: crisp-edges;
+  position: absolute;
+  bottom: 14px;
+  left: 50%;
+  transform: translateX(-50%);
+  transition: transform 0.15s ease;
+  cursor: pointer;
+  filter: drop-shadow(0 4px 8px rgba(0,0,0,0.5));
+}
+
+/* Sushi cat */
+#sushiCanvas {
+  width: 48px;
+  height: 48px;
+  image-rendering: pixelated;
+  image-rendering: crisp-edges;
+  position: absolute;
+  bottom: 14px;
+  right: 24px;
+  transition: transform 0.3s ease;
+  opacity: 0.85;
+}
+
+/* Shadow beneath pet */
+.pet-shadow {
+  position: absolute;
+  bottom: 12px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 80px;
+  height: 6px;
+  background: radial-gradient(ellipse, rgba(0,0,0,0.4) 0%, transparent 70%);
+  border-radius: 50%;
+}
+
+/* Mood text */
+.mood-text {
+  position: absolute;
+  top: 8px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-family: 'Orbitron', sans-serif;
+  font-size: 7px;
+  letter-spacing: 3px;
+  color: var(--t3);
+  transition: color 0.5s;
+  white-space: nowrap;
+}
+
+/* Stars */
+.star {
+  position: absolute;
+  width: 2px;
+  height: 2px;
+  background: rgba(192,216,248,0.6);
+  border-radius: 50%;
+  animation: twinkle var(--d, 3s) ease-in-out infinite;
+}
+
+@keyframes twinkle {
+  0%, 100% { opacity: 0.3; }
+  50%       { opacity: 1; }
+}
+
+/* Emoji particle effects */
+.emo {
+  position: absolute;
+  font-size: 18px;
+  animation: floatUp 1.3s ease-out forwards;
+  pointer-events: none;
+  z-index: 10;
+  user-select: none;
+}
+
+@keyframes floatUp {
+  0%   { opacity: 1; transform: translateY(0) scale(1); }
+  100% { opacity: 0; transform: translateY(-50px) scale(0.5); }
+}
+
+/* Effects layer */
+.effects-layer {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
