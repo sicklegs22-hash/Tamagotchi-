@@ -1,0 +1,2257 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
+  <title>ARISE PET — Sir Bap</title>
+
+  <!-- Google Fonts: Orbitron for titles, Rajdhani for UI text -->
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700;900&family=Rajdhani:wght@400;500;600;700&display=swap" rel="stylesheet" />
+
+  <style>
+    /* ============================================================
+       CSS CUSTOM PROPERTIES (THEME VARIABLES)
+       ============================================================ */
+    :root {
+      /* Background colors */
+      --color-void:        #030309;
+      --color-panel:       rgba(8, 16, 44, 0.95);
+      --color-panel-light: rgba(12, 24, 64, 0.85);
+      --color-panel-border:rgba(40, 100, 255, 0.22);
+
+      /* Accent colors */
+      --color-blue:        #3a8fff;
+      --color-blue-light:  #60b0ff;
+      --color-blue-glow:   rgba(58, 143, 255, 0.35);
+      --color-gold:        #f0c848;
+      --color-gold-dark:   #c8a030;
+      --color-red:         #ff4455;
+      --color-green:       #40e878;
+      --color-purple:      #b070ff;
+
+      /* Text colors */
+      --color-text:        #c0d8f8;
+      --color-text-dim:    #7a9cc8;
+      --color-text-muted:  #4a6a90;
+      --color-white:       #e8f0ff;
+
+      /* Fonts */
+      --font-title: 'Orbitron', sans-serif;
+      --font-ui:    'Rajdhani', sans-serif;
+
+      /* Spacing */
+      --shell-width: 400px;
+      --shell-max-height: 820px;
+    }
+
+    /* ============================================================
+       RESET & BASE
+       ============================================================ */
+    *, *::before, *::after {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    html, body {
+      height: 100%;
+      overflow: hidden;
+      touch-action: manipulation;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+      background: var(--color-void);
+      color: var(--color-text);
+      font-family: var(--font-ui);
+      font-weight: 500;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    /* ============================================================
+       MAIN SHELL — mobile-first 400px container
+       ============================================================ */
+    #game-shell {
+      width: var(--shell-width);
+      max-width: 100vw;
+      height: 100%;
+      max-height: var(--shell-max-height);
+      display: flex;
+      flex-direction: column;
+      background: var(--color-panel);
+      border: 1px solid var(--color-panel-border);
+      border-radius: 14px;
+      overflow: hidden;
+      position: relative;
+    }
+
+    /* ============================================================
+       TOP BAR — rank, name, level, gold, day
+       ============================================================ */
+    #top-bar {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 8px 12px;
+      border-bottom: 1px solid rgba(58, 143, 255, 0.12);
+      flex-shrink: 0;
+      background: rgba(4, 10, 30, 0.6);
+    }
+
+    #rank-badge {
+      font-family: var(--font-title);
+      font-size: 9px;
+      letter-spacing: 1.5px;
+      color: var(--color-gold);
+      border: 1px solid var(--color-gold-dark);
+      padding: 2px 7px;
+      border-radius: 2px;
+      transition: all 0.4s ease;
+      cursor: pointer; /* clicking title 5x resets */
+      user-select: none;
+    }
+
+    #pet-name {
+      font-family: var(--font-title);
+      font-size: 10px;
+      color: var(--color-white);
+      letter-spacing: 2px;
+    }
+
+    #level-display {
+      font-family: var(--font-title);
+      font-size: 8px;
+      color: var(--color-text-muted);
+      letter-spacing: 1px;
+    }
+
+    #gold-display {
+      font-family: var(--font-title);
+      font-size: 9px;
+      color: var(--color-gold);
+      letter-spacing: 1px;
+      margin-left: auto;
+    }
+
+    #day-display {
+      font-family: var(--font-title);
+      font-size: 8px;
+      color: var(--color-text-muted);
+      margin-left: 8px;
+    }
+
+    #streak-display {
+      font-size: 9px;
+      color: var(--color-blue-light);
+      margin-left: 4px;
+    }
+
+    /* ============================================================
+       STAT BARS
+       ============================================================ */
+    #stats-panel {
+      padding: 6px 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+      flex-shrink: 0;
+      border-bottom: 1px solid rgba(58, 143, 255, 0.06);
+    }
+
+    .stat-row {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .stat-label {
+      width: 70px;
+      font-size: 10px;
+      color: var(--color-text-muted);
+      font-family: var(--font-ui);
+      font-weight: 600;
+      letter-spacing: 0.5px;
+    }
+
+    .stat-track {
+      flex: 1;
+      height: 5px;
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 2px;
+      overflow: hidden;
+    }
+
+    .stat-fill {
+      height: 100%;
+      border-radius: 2px;
+      transition: width 0.5s ease;
+    }
+
+    /* Color-coded stat bars */
+    .stat-fill.discipline { background: linear-gradient(90deg, #3a8fff, #60b0ff); }
+    .stat-fill.energy     { background: linear-gradient(90deg, #40e878, #80ffb0); }
+    .stat-fill.focus      { background: linear-gradient(90deg, #b070ff, #d0a0ff); }
+    .stat-fill.sales      { background: linear-gradient(90deg, #f0c848, #ffe080); }
+    .stat-fill.happiness  { background: linear-gradient(90deg, #ff7090, #ffb0c0); }
+    .stat-fill.xp         { background: linear-gradient(90deg, #00ccff, #80eeff); }
+
+    /* Red danger zone when < 25% */
+    .stat-fill.danger { background: linear-gradient(90deg, #ff2233, #ff5566) !important; }
+
+    .stat-value {
+      font-family: var(--font-title);
+      font-size: 8px;
+      width: 22px;
+      text-align: right;
+      color: var(--color-text-dim);
+    }
+
+    /* ============================================================
+       VIEWPORT — pet canvas area
+       ============================================================ */
+    #viewport {
+      flex: 1;
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      gap: 4px;
+      transition: background 1.5s ease;
+      min-height: 0;
+    }
+
+    /* Day/Night backgrounds */
+    #viewport.day {
+      background: linear-gradient(180deg, #0a1028 0%, #101838 50%, #0c1230 100%);
+    }
+
+    #viewport.night {
+      background: linear-gradient(180deg, #020208 0%, #060616 50%, #040310 100%);
+    }
+
+    /* Stars container */
+    #stars-container {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .star-dot {
+      position: absolute;
+      width: 2px;
+      height: 2px;
+      background: #fff;
+      border-radius: 50%;
+      opacity: 0.1;
+      animation: twinkle var(--twinkle-dur, 3s) ease-in-out infinite;
+      animation-delay: var(--twinkle-delay, 0s);
+    }
+
+    @keyframes twinkle {
+      0%, 100% { opacity: 0.05; }
+      50%       { opacity: 0.4; }
+    }
+
+    /* Pet canvas */
+    #pet-canvas {
+      image-rendering: pixelated;
+      image-rendering: crisp-edges;
+      width: 192px;
+      height: 256px;
+      position: relative;
+      z-index: 2;
+      transition: transform 0.15s ease;
+    }
+
+    /* Idle bounce animation */
+    @keyframes pet-bounce {
+      0%, 100% { transform: translateY(0px); }
+      50%       { transform: translateY(-5px); }
+    }
+
+    #pet-canvas.idle-anim {
+      animation: pet-bounce 2s ease-in-out infinite;
+    }
+
+    /* Shadow under pet */
+    #pet-shadow {
+      width: 90px;
+      height: 10px;
+      background: radial-gradient(ellipse, rgba(0,0,0,0.4), transparent 70%);
+      z-index: 1;
+      margin-top: -4px;
+      position: relative;
+    }
+
+    /* Mood label */
+    #mood-label {
+      font-family: var(--font-title);
+      font-size: 7px;
+      letter-spacing: 2.5px;
+      color: var(--color-text-muted);
+      z-index: 2;
+      transition: color 0.4s ease;
+      position: relative;
+    }
+
+    /* Floating particle effects */
+    #effects-layer {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      z-index: 10;
+      overflow: hidden;
+    }
+
+    .float-particle {
+      position: absolute;
+      font-size: 22px;
+      pointer-events: none;
+      animation: float-up 1.3s ease-out forwards;
+    }
+
+    @keyframes float-up {
+      0%   { opacity: 1; transform: translateY(0) scale(1); }
+      50%  { opacity: 1; }
+      100% { opacity: 0; transform: translateY(-70px) scale(0.5); }
+    }
+
+    /* ============================================================
+       EVENT LOG / FEED
+       ============================================================ */
+    #event-log {
+      flex-shrink: 0;
+      height: 50px;
+      overflow-y: auto;
+      padding: 4px 12px;
+      border-top: 1px solid rgba(58, 143, 255, 0.06);
+      border-bottom: 1px solid rgba(58, 143, 255, 0.06);
+      scrollbar-width: thin;
+      scrollbar-color: var(--color-panel-border) transparent;
+    }
+
+    .log-entry {
+      font-size: 9px;
+      color: var(--color-text-dim);
+      line-height: 1.5;
+      font-family: var(--font-ui);
+    }
+
+    .log-entry .log-time {
+      color: var(--color-text-muted);
+      margin-right: 4px;
+    }
+
+    .log-entry .log-action {
+      color: var(--color-blue-light);
+    }
+
+    /* ============================================================
+       ACTION BUTTONS GRID
+       ============================================================ */
+    #actions-panel {
+      padding: 6px 10px 8px;
+      flex-shrink: 0;
+    }
+
+    .action-row {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 5px;
+      margin-bottom: 5px;
+    }
+
+    .action-row:last-child {
+      margin-bottom: 0;
+    }
+
+    .action-btn {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 6px 2px;
+      background: var(--color-panel-light);
+      border: 1px solid var(--color-panel-border);
+      border-radius: 6px;
+      cursor: pointer;
+      user-select: none;
+      transition: transform 0.1s ease, background 0.2s ease, border-color 0.2s ease;
+      -webkit-tap-highlight-color: transparent;
+      gap: 1px;
+    }
+
+    .action-btn:hover {
+      background: rgba(40, 80, 180, 0.4);
+      border-color: var(--color-blue);
+    }
+
+    .action-btn:active {
+      transform: scale(0.93);
+      background: rgba(58, 143, 255, 0.25);
+    }
+
+    .action-btn.locked {
+      opacity: 0.35;
+      cursor: not-allowed;
+    }
+
+    .btn-emoji {
+      font-size: 18px;
+      line-height: 1;
+    }
+
+    .btn-label {
+      font-family: var(--font-title);
+      font-size: 7px;
+      letter-spacing: 0.5px;
+      color: var(--color-white);
+      text-align: center;
+    }
+
+    .btn-sublabel {
+      font-size: 7px;
+      color: var(--color-text-muted);
+      text-align: center;
+      font-family: var(--font-ui);
+      line-height: 1;
+    }
+
+    /* ============================================================
+       NOTIFICATION BANNER (slides in from top of viewport)
+       ============================================================ */
+    #banner {
+      position: absolute;
+      top: 8px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 20;
+      background: var(--color-panel);
+      border: 1px solid var(--color-blue-glow);
+      padding: 6px 14px;
+      font-family: var(--font-title);
+      font-size: 8px;
+      letter-spacing: 2px;
+      color: var(--color-blue-light);
+      max-width: 90%;
+      text-align: center;
+      border-radius: 4px;
+      opacity: 0;
+      transition: opacity 0.4s ease;
+      pointer-events: none;
+      white-space: nowrap;
+    }
+
+    #banner.show {
+      opacity: 1;
+    }
+
+    /* ============================================================
+       OVERLAY BASE (shared by evolution, spending log, quests)
+       ============================================================ */
+    .overlay {
+      position: absolute;
+      inset: 0;
+      z-index: 30;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      background: rgba(2, 4, 16, 0.97);
+      padding: 20px;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.4s ease;
+    }
+
+    .overlay.active {
+      opacity: 1;
+      pointer-events: all;
+    }
+
+    /* ============================================================
+       EVOLUTION CINEMATIC OVERLAY
+       ============================================================ */
+    #evo-overlay {
+      text-align: center;
+      gap: 16px;
+    }
+
+    #evo-overlay .evo-flash {
+      position: absolute;
+      inset: 0;
+      background: white;
+      opacity: 0;
+      pointer-events: none;
+      z-index: 1;
+      animation: evo-flash-anim 0.6s ease-out;
+    }
+
+    @keyframes evo-flash-anim {
+      0%   { opacity: 0.8; }
+      100% { opacity: 0; }
+    }
+
+    #evo-overlay .evo-title {
+      font-family: var(--font-title);
+      font-size: 10px;
+      letter-spacing: 4px;
+      color: var(--color-gold);
+      z-index: 2;
+      position: relative;
+      animation: pulse-glow 1.5s ease-in-out infinite;
+    }
+
+    @keyframes pulse-glow {
+      0%, 100% { text-shadow: 0 0 10px var(--color-gold); }
+      50%       { text-shadow: 0 0 30px var(--color-gold), 0 0 60px var(--color-gold-dark); }
+    }
+
+    #evo-rank-name {
+      font-family: var(--font-title);
+      font-size: 22px;
+      font-weight: 900;
+      color: var(--color-white);
+      letter-spacing: 3px;
+      z-index: 2;
+      position: relative;
+    }
+
+    #evo-canvas {
+      image-rendering: pixelated;
+      image-rendering: crisp-edges;
+      width: 192px;
+      height: 256px;
+      z-index: 2;
+      position: relative;
+    }
+
+    #evo-desc {
+      font-size: 12px;
+      color: var(--color-text-dim);
+      max-width: 280px;
+      text-align: center;
+      line-height: 1.5;
+      z-index: 2;
+      position: relative;
+    }
+
+    #evo-arise-btn {
+      font-family: var(--font-title);
+      font-size: 12px;
+      letter-spacing: 4px;
+      color: var(--color-gold);
+      border: 2px solid var(--color-gold);
+      background: transparent;
+      padding: 10px 30px;
+      border-radius: 4px;
+      cursor: pointer;
+      z-index: 2;
+      position: relative;
+      transition: all 0.2s ease;
+      animation: pulse-glow 1.5s ease-in-out infinite;
+    }
+
+    #evo-arise-btn:hover {
+      background: rgba(240, 200, 72, 0.15);
+      transform: scale(1.05);
+    }
+
+    /* ============================================================
+       SPENDING LOG OVERLAY
+       ============================================================ */
+    #spend-overlay {
+      gap: 12px;
+      overflow-y: auto;
+    }
+
+    #spend-overlay h2 {
+      font-family: var(--font-title);
+      font-size: 12px;
+      letter-spacing: 3px;
+      color: var(--color-gold);
+    }
+
+    .spend-input-row {
+      display: flex;
+      gap: 8px;
+      width: 100%;
+    }
+
+    #spend-input {
+      flex: 1;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid var(--color-panel-border);
+      border-radius: 4px;
+      color: var(--color-white);
+      font-family: var(--font-ui);
+      font-size: 14px;
+      padding: 8px 12px;
+    }
+
+    #spend-input:focus {
+      outline: none;
+      border-color: var(--color-blue);
+    }
+
+    #spend-log-btn {
+      background: var(--color-blue);
+      border: none;
+      border-radius: 4px;
+      color: var(--color-white);
+      font-family: var(--font-title);
+      font-size: 10px;
+      letter-spacing: 1px;
+      padding: 8px 14px;
+      cursor: pointer;
+      transition: background 0.2s ease;
+    }
+
+    #spend-log-btn:hover {
+      background: var(--color-blue-light);
+    }
+
+    .spend-history {
+      width: 100%;
+      max-height: 200px;
+      overflow-y: auto;
+    }
+
+    .spend-entry {
+      display: flex;
+      justify-content: space-between;
+      padding: 4px 0;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+      font-size: 11px;
+    }
+
+    .spend-entry .spend-day-label { color: var(--color-text-muted); }
+    .spend-entry .spend-amount    { color: var(--color-gold); }
+    .spend-entry .spend-result    { font-size: 10px; color: var(--color-text-dim); }
+
+    .overlay-close-btn {
+      font-family: var(--font-title);
+      font-size: 10px;
+      letter-spacing: 2px;
+      color: var(--color-text-muted);
+      background: transparent;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      padding: 6px 20px;
+      border-radius: 4px;
+      cursor: pointer;
+      margin-top: 8px;
+      transition: all 0.2s ease;
+    }
+
+    .overlay-close-btn:hover {
+      border-color: var(--color-text-dim);
+      color: var(--color-white);
+    }
+
+    /* ============================================================
+       QUEST LOG OVERLAY
+       ============================================================ */
+    #quest-overlay {
+      gap: 10px;
+      overflow-y: auto;
+    }
+
+    #quest-overlay h2 {
+      font-family: var(--font-title);
+      font-size: 12px;
+      letter-spacing: 3px;
+      color: var(--color-gold);
+    }
+
+    .quest-list {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      max-height: 380px;
+      overflow-y: auto;
+    }
+
+    .quest-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 10px;
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      border-radius: 6px;
+    }
+
+    .quest-item.completed {
+      border-color: rgba(64, 232, 120, 0.3);
+      background: rgba(64, 232, 120, 0.05);
+    }
+
+    .quest-item.locked {
+      opacity: 0.4;
+    }
+
+    .quest-icon {
+      font-size: 18px;
+    }
+
+    .quest-info { flex: 1; }
+
+    .quest-name {
+      font-family: var(--font-title);
+      font-size: 9px;
+      letter-spacing: 0.5px;
+      color: var(--color-white);
+    }
+
+    .quest-desc {
+      font-size: 9px;
+      color: var(--color-text-muted);
+    }
+
+    .quest-status {
+      font-size: 14px;
+    }
+
+    /* ============================================================
+       ACHIEVEMENT POPUP (slides in from top)
+       ============================================================ */
+    #achievement-popup {
+      position: absolute;
+      top: -80px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 25;
+      background: linear-gradient(135deg, rgba(240, 200, 72, 0.15), rgba(8, 18, 48, 0.98));
+      border: 1px solid var(--color-gold);
+      border-radius: 8px;
+      padding: 10px 16px;
+      text-align: center;
+      width: 85%;
+      transition: top 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+      box-shadow: 0 0 20px rgba(240, 200, 72, 0.3);
+    }
+
+    #achievement-popup.visible {
+      top: 8px;
+    }
+
+    .achievement-title {
+      font-family: var(--font-title);
+      font-size: 7px;
+      letter-spacing: 3px;
+      color: var(--color-gold);
+      margin-bottom: 3px;
+    }
+
+    .achievement-name {
+      font-family: var(--font-title);
+      font-size: 11px;
+      color: var(--color-white);
+      letter-spacing: 1px;
+    }
+
+    /* ============================================================
+       SCROLLBAR STYLING
+       ============================================================ */
+    ::-webkit-scrollbar {
+      width: 3px;
+    }
+
+    ::-webkit-scrollbar-track {
+      background: transparent;
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background: var(--color-panel-border);
+      border-radius: 2px;
+    }
+  </style>
+</head>
+<body>
+
+<!-- ============================================================
+     MAIN GAME SHELL
+     ============================================================ -->
+<div id="game-shell">
+
+  <!-- TOP BAR -->
+  <div id="top-bar">
+    <div id="rank-badge" title="Click 5x to reset">E-RANK</div>
+    <div id="pet-name">SIR BAP</div>
+    <div id="level-display">LV 1</div>
+    <div id="gold-display">💰 400g</div>
+    <div id="day-display">DAY 1</div>
+    <div id="streak-display">🔥0</div>
+  </div>
+
+  <!-- STAT BARS -->
+  <div id="stats-panel">
+    <div class="stat-row">
+      <span class="stat-label">DISCIPLINE</span>
+      <div class="stat-track"><div class="stat-fill discipline" id="bar-discipline" style="width:50%"></div></div>
+      <span class="stat-value" id="val-discipline">50</span>
+    </div>
+    <div class="stat-row">
+      <span class="stat-label">ENERGY</span>
+      <div class="stat-track"><div class="stat-fill energy" id="bar-energy" style="width:60%"></div></div>
+      <span class="stat-value" id="val-energy">60</span>
+    </div>
+    <div class="stat-row">
+      <span class="stat-label">FOCUS</span>
+      <div class="stat-track"><div class="stat-fill focus" id="bar-focus" style="width:40%"></div></div>
+      <span class="stat-value" id="val-focus">40</span>
+    </div>
+    <div class="stat-row">
+      <span class="stat-label">SALES</span>
+      <div class="stat-track"><div class="stat-fill sales" id="bar-sales" style="width:30%"></div></div>
+      <span class="stat-value" id="val-sales">30</span>
+    </div>
+    <div class="stat-row">
+      <span class="stat-label">HAPPINESS</span>
+      <div class="stat-track"><div class="stat-fill happiness" id="bar-happiness" style="width:55%"></div></div>
+      <span class="stat-value" id="val-happiness">55</span>
+    </div>
+    <div class="stat-row">
+      <span class="stat-label">XP</span>
+      <div class="stat-track"><div class="stat-fill xp" id="bar-xp" style="width:0%"></div></div>
+      <span class="stat-value" id="val-xp">0</span>
+    </div>
+  </div>
+
+  <!-- VIEWPORT (pet canvas + stars) -->
+  <div id="viewport" class="day">
+
+    <!-- Twinkling stars (populated by JS) -->
+    <div id="stars-container"></div>
+
+    <!-- Pet canvas (24×32 grid scaled to 192×256) -->
+    <canvas id="pet-canvas" width="24" height="32" class="idle-anim"></canvas>
+
+    <!-- Shadow -->
+    <div id="pet-shadow"></div>
+
+    <!-- Mood text -->
+    <div id="mood-label">IDLE</div>
+
+    <!-- Floating particles layer -->
+    <div id="effects-layer"></div>
+
+    <!-- Notification banner -->
+    <div id="banner"></div>
+
+    <!-- Achievement popup -->
+    <div id="achievement-popup">
+      <div class="achievement-title">✦ ACHIEVEMENT UNLOCKED ✦</div>
+      <div class="achievement-name" id="achievement-name">—</div>
+    </div>
+
+  </div>
+
+  <!-- EVENT LOG -->
+  <div id="event-log">
+    <div class="log-entry"><span class="log-time">[DAY 1]</span> <span class="log-action">ARISE PET initialized. Begin your journey, Sir Bap.</span></div>
+  </div>
+
+  <!-- ACTION BUTTONS -->
+  <div id="actions-panel">
+    <!-- Row 1 -->
+    <div class="action-row">
+      <button class="action-btn" id="btn-sleep"   onclick="doAction('sleep')">
+        <span class="btn-emoji">😴</span>
+        <span class="btn-label">SLEEP</span>
+        <span class="btn-sublabel">+ENG +DISC</span>
+      </button>
+      <button class="action-btn" id="btn-save"    onclick="doAction('save')">
+        <span class="btn-emoji">🏦</span>
+        <span class="btn-label">SAVE</span>
+        <span class="btn-sublabel">+DISC +💰</span>
+      </button>
+      <button class="action-btn" id="btn-market"  onclick="doAction('market')">
+        <span class="btn-emoji">📣</span>
+        <span class="btn-label">MARKET</span>
+        <span class="btn-sublabel">+FOCUS</span>
+      </button>
+      <button class="action-btn" id="btn-sell"    onclick="doAction('sell')">
+        <span class="btn-emoji">🤝</span>
+        <span class="btn-label">SELL</span>
+        <span class="btn-sublabel">+💰 +SALES</span>
+      </button>
+    </div>
+    <!-- Row 2 -->
+    <div class="action-row">
+      <button class="action-btn" id="btn-train"   onclick="doAction('train')">
+        <span class="btn-emoji">⚔️</span>
+        <span class="btn-label">TRAIN</span>
+        <span class="btn-sublabel">+ALL -ENG</span>
+      </button>
+      <button class="action-btn" id="btn-build"   onclick="doAction('build')">
+        <span class="btn-emoji">🔨</span>
+        <span class="btn-label">BUILD</span>
+        <span class="btn-sublabel">+HAPPY -FOC</span>
+      </button>
+      <button class="action-btn" id="btn-date"    onclick="doAction('date')">
+        <span class="btn-emoji">💕</span>
+        <span class="btn-label">DATE</span>
+        <span class="btn-sublabel">+HAPPY +ENG</span>
+      </button>
+      <button class="action-btn" id="btn-logspend" onclick="openSpendOverlay()">
+        <span class="btn-emoji">💸</span>
+        <span class="btn-label">LOG $</span>
+        <span class="btn-sublabel">SPENDING</span>
+      </button>
+    </div>
+    <!-- Row 3 -->
+    <div class="action-row">
+      <button class="action-btn locked" id="btn-workout" onclick="doAction('workout')" title="Unlocks Day 3+">
+        <span class="btn-emoji">💪</span>
+        <span class="btn-label">WORKOUT</span>
+        <span class="btn-sublabel">+DISC +ENG</span>
+      </button>
+      <button class="action-btn" id="btn-blow"    onclick="doAction('blow')">
+        <span class="btn-emoji">🎰</span>
+        <span class="btn-label">BLOW $</span>
+        <span class="btn-sublabel">+HAPPY -💰</span>
+      </button>
+      <button class="action-btn" id="btn-budget"  onclick="doAction('budget')">
+        <span class="btn-emoji">📋</span>
+        <span class="btn-label">BUDGET</span>
+        <span class="btn-sublabel">+DISC +FOC</span>
+      </button>
+      <button class="action-btn" id="btn-quests"  onclick="openQuestOverlay()">
+        <span class="btn-emoji">📜</span>
+        <span class="btn-label">QUESTS</span>
+        <span class="btn-sublabel">LOG</span>
+      </button>
+    </div>
+  </div>
+
+</div><!-- end #game-shell -->
+
+<!-- ============================================================
+     EVOLUTION CINEMATIC OVERLAY
+     ============================================================ -->
+<div class="overlay" id="evo-overlay">
+  <div class="evo-flash"></div>
+  <div class="evo-title">✦ EVOLUTION ✦</div>
+  <div id="evo-rank-name">D-RANK RECRUIT</div>
+  <canvas id="evo-canvas" width="24" height="32"></canvas>
+  <div id="evo-desc">You have grown stronger. The path ahead shines.</div>
+  <button id="evo-arise-btn" onclick="dismissEvolution()">— ARISE —</button>
+</div>
+
+<!-- ============================================================
+     SPENDING LOG OVERLAY
+     ============================================================ -->
+<div class="overlay" id="spend-overlay">
+  <h2>💸 SPENDING LOG</h2>
+  <p style="font-size:11px; color:var(--color-text-muted); text-align:center;">
+    Track non-essential spending. Discipline rises or falls based on your choices.
+  </p>
+  <div class="spend-input-row">
+    <input type="number" id="spend-input" placeholder="$ spent today" min="0" step="1" />
+    <button id="spend-log-btn" onclick="logSpending()">LOG</button>
+  </div>
+  <div class="spend-history" id="spend-history"></div>
+  <button class="overlay-close-btn" onclick="closeOverlay('spend-overlay')">CLOSE</button>
+</div>
+
+<!-- ============================================================
+     QUEST LOG OVERLAY
+     ============================================================ -->
+<div class="overlay" id="quest-overlay">
+  <h2>📜 QUEST LOG</h2>
+  <div class="quest-list" id="quest-list"></div>
+  <button class="overlay-close-btn" onclick="closeOverlay('quest-overlay')">CLOSE</button>
+</div>
+
+
+<script>
+/* ================================================================
+   ARISE PET — Sir Bap  |  bap-tamagotchi-v3.html
+   A Solo Leveling / dark RPG Tamagotchi habit tracker
+   Built from scratch — clean, readable, well-commented code.
+   ================================================================ */
+
+/* ----------------------------------------------------------------
+   PIXEL ART SPRITE DEFINITIONS
+   Each stage is a palette (single-char → hex color) and a
+   24×32 grid of chars. '.' = transparent.
+   ---------------------------------------------------------------- */
+const SPRITES = {
+
+  /* Stage 0 — E-Rank Scrub: simple peasant, tattered tunic, no gear */
+  0: {
+    palette: {
+      'S': '#d4a87a', // skin
+      'H': '#5c3a1e', // dark brown hair
+      'T': '#8b6a4a', // tattered tunic (tan-brown)
+      'D': '#6b4f35', // tunic shadow/dark
+      'P': '#7a6254', // pants (grey-brown)
+      'B': '#3d2b1f', // dark pants/shadow
+      'F': '#c8966a', // face
+      'E': '#2a1a0e', // eyes
+      'N': '#b87850', // nose/details
+      'W': '#a08060', // worn cloth
+      'G': '#4a3020', // ground shadow band
+      'L': '#8a7060', // light pants
+    },
+    grid: [
+      '........................', // row 1
+      '........................', // row 2
+      '........................', // row 3
+      '............HHHH........', // row 4
+      '...........HFFFFH.......',  // row 5
+      '...........HFFFFE.......',  // row 6  (E = eye side)
+      '...........HFNEFFE......', // row 7
+      '...........HFFFFFH......', // row 8
+      '............HHHH........', // row 9
+      '...........TTTTTTT......', // row 10 - shoulders
+      '..........TTTTTTTTTT....', // row 11 - upper body
+      '..........TDDDDDDDDT....', // row 12 - tunic body
+      '..........TDWWWWWWDT....', // row 13 - tunic mid
+      '..........TDWWWWWWDT....', // row 14
+      '..........TTTTTTTTTT....', // row 15
+      '..........TTTTTTTTTT....', // row 16
+      '...........PPPPPPPP.....', // row 17 - waist
+      '..........PPPPPPPPPP....', // row 18 - hips
+      '..........BPPP..PPPB....', // row 19 - upper leg split
+      '..........BPPP..PPPB....', // row 20
+      '..........BPPP..PPPB....', // row 21
+      '..........BLLL..LLLB....', // row 22 - lower legs
+      '..........BLLL..LLLB....', // row 23
+      '..........BLLL..LLLB....', // row 24
+      '..........GGGGGGGGGGG...', // row 25 - shoes
+      '..........GGGGGGGGGGG...', // row 26
+      '........................', // row 27
+      '........................', // row 28
+      '........................', // row 29
+      '........................', // row 30
+      '........................', // row 31
+      '........................', // row 32
+    ]
+  },
+
+  /* Stage 1 — D-Rank Recruit: headband, leather armor, short sword */
+  1: {
+    palette: {
+      'S': '#d4a87a', // skin
+      'H': '#5c3a1e', // hair
+      'B': '#c83030', // headband (red)
+      'L': '#8b5e2a', // leather armor
+      'D': '#6a4418', // leather dark
+      'G': '#9a8060', // leather highlight
+      'P': '#5a4a3a', // pants dark
+      'Q': '#7a6a5a', // pants light
+      'W': '#c8c8c8', // sword blade
+      'R': '#a0a0a0', // sword shadow
+      'O': '#c87020', // sword hilt gold
+      'E': '#1a0a00', // eyes
+      'F': '#d4a87a', // face (same as skin)
+      'K': '#3a2818', // very dark
+      'T': '#b07040', // tunic under armor
+    },
+    grid: [
+      '........................',
+      '........................',
+      '............HHHH........',
+      '..........HHHBBBBHHH....',
+      '..........BBBBBBBBBBB...',
+      '..........HFFFFFFFHBH...',
+      '..........HFFEFFFHH.....',
+      '..........HFFFFFH.......',
+      '..........HFFFFFH.......',
+      '...........HHHHHH.......',
+      '..........LLLLLLLLL.....',
+      '.........LLDDDDDDDDL....',
+      '.........LDGGGGGGGGDL...',
+      '.........LDGGGGGGGGDL...',
+      '.........LDDDDDDDDDDL...',
+      '.........LLLLLLLLLLL....',
+      '..........PPPPPPPPPP....',
+      '...........QQQQQQQQ.....',
+      '..........PPPP..PPPP....',
+      '..........PPPP..PPPP....',
+      '..........KKKK..KKKK....',
+      '..........KKKK..KKKK....',
+      '..........KKKK..KKKK....',
+      '..........KKKK..KKKK....',
+      '........WRRKKK..KKKK....',
+      '.......WRRRKKK..KKKK....',
+      '......WRRRR.............',
+      '.....ORRR...............',
+      '........................',
+      '........................',
+      '........................',
+      '........................',
+    ]
+  },
+
+  /* Stage 2 — C-Rank Warrior: metal helmet, chainmail, proper sword */
+  2: {
+    palette: {
+      'S': '#d4a87a', // skin
+      'M': '#a0a8b0', // metal helmet
+      'V': '#c0c8d0', // metal highlight
+      'K': '#607080', // metal dark
+      'C': '#808890', // chainmail
+      'G': '#606870', // chainmail dark
+      'P': '#504848', // pants
+      'D': '#403838', // pants dark
+      'W': '#d0d8e0', // sword blade
+      'R': '#9098a0', // sword dark
+      'O': '#e0a020', // gold hilt
+      'B': '#803020', // red accent
+      'E': '#1a1a2a', // eyes
+      'F': '#d4a87a', // face
+      'L': '#b0b8c0', // light metal
+    },
+    grid: [
+      '........................',
+      '........................',
+      '...........MMMMM........',
+      '..........MMVVVMM.......',
+      '..........MVVVVVM.......',
+      '.........KMMFFFFMMK.....',
+      '.........KMFFEFFFMK.....',
+      '.........KMFFFFFMMK.....',
+      '.........KMKKKKKKMK.....',
+      '..........MMMMMMM.......',
+      '..........BMMMMMMB......',
+      '.........CCCCCCCCCCC....',
+      '.........CGGGGGGGGGC....',
+      '.........CGGGGGGGGGC....',
+      '.........CGGGGGGGGGC....',
+      '.........CGGGGGGGGGC....',
+      '.........CCCCCCCCCCC....',
+      '..........PPPPPPPPPP....',
+      '..........DDPP..PPDD....',
+      '..........DDPP..PPDD....',
+      '..........DDPP..PPDD....',
+      '..........DDPP..PPDD....',
+      '..........DDPP..PPDD....',
+      '..........DDPP..PPDD....',
+      '........WRRDDP..PPDD....',
+      '.......WRRRDDP..PPDD....',
+      '......WRRRRR............',
+      '.....ORRRRR.............',
+      '....OORRR...............',
+      '........................',
+      '........................',
+      '........................',
+    ]
+  },
+
+  /* Stage 3 — B-Rank Knight: full plate, plume helmet, cape, gold pauldrons */
+  3: {
+    palette: {
+      'S': '#d4a87a', // skin
+      'P': '#b0bcc8', // plate armor silver
+      'V': '#d0dce8', // plate highlight
+      'K': '#6080a0', // plate dark
+      'G': '#e0b020', // gold pauldrons
+      'O': '#c09010', // gold dark
+      'R': '#b03020', // red plume
+      'C': '#800020', // cape dark red
+      'A': '#a03030', // cape mid
+      'E': '#1a1a2a', // eyes
+      'F': '#d4a87a', // face
+      'W': '#e8f0f8', // sword blade bright
+      'B': '#90a0b0', // sword shadow
+      'H': '#708090', // plate mid
+      'L': '#d0a030', // gold lite
+    },
+    grid: [
+      '........................',
+      '...........RRRR.........',
+      '..........RRRRRR........',
+      '..........PPVVPP........',
+      '.........PPVVVVPP.......',
+      '.........PKFFFEEPK......',
+      '.........PKFFFFEPK......',
+      '.........PKFFFFPK.......',
+      '..........PPKKPP........',
+      '...........PPPP.........',
+      '..CCCC....GPPPPG....CCCC',
+      '.CCAACC..GGPPPPPGG..CCAA',
+      '.CAAAACC.GPPPPPPPG..CCAA',
+      '.CAAAAAC.KPPPPPPPK..CAAA',
+      '.CAAAAAC.KPPPPPPPK..CAAA',
+      '.CAAAAAC..PPPPPPP...CAAA',
+      '.CAAAAC...HHHHHHH...CAAA',
+      '..CCCC....PPPPPPP...CCCC',
+      '..........KPPP.PPPK.....',
+      '..........KPPP.PPPK.....',
+      '..........KPPP.PPPK.....',
+      '..........KPPP.PPPK.....',
+      '..........HPPP.PPPH.....',
+      '..........HPPP.PPPH.....',
+      '..........HPPP.PPPH.....',
+      '.......WBBHPPP.PPPH.....',
+      '......WBBBHPPP.PPPH.....',
+      '.....WBBBBLLL..LLLB.....',
+      '....OBBBB...............',
+      '...OOOBB................',
+      '........................',
+      '........................',
+    ]
+  },
+
+  /* Stage 4 — A-Rank Champion: gleaming armor, flowing cape, glowing weapon */
+  4: {
+    palette: {
+      'S': '#d4a87a', // skin
+      'P': '#c8d8e8', // bright plate
+      'V': '#e8f4ff', // plate bright highlight
+      'K': '#5070a0', // plate deep shadow
+      'G': '#ffe060', // bright gold
+      'O': '#d0a020', // gold shadow
+      'C': '#2030c0', // royal blue cape
+      'A': '#4060e0', // cape highlight
+      'E': '#1a1a2a', // eyes
+      'F': '#d4a87a', // face
+      'W': '#ffffff', // blade white
+      'B': '#80c0ff', // blade glow blue
+      'R': '#4090ff', // blade glow deep
+      'H': '#a0b8d0', // armor mid
+      'L': '#6080a0', // leg armor
+    },
+    grid: [
+      '...........GGGG.........',
+      '..........GGGGG.........',
+      '.........PPVVVPPP.......',
+      '........PPVVVVVVPP......',
+      '........PKFFFFFFPK......',
+      '........PKFFEFFFPK......',
+      '........PKFFFFFFPK......',
+      '........PKPPPPPPPK......',
+      '.........PPPPPPPP.......',
+      '..AAAA..GGPPPPPPPGG.AAAA',
+      '.AACCAA.GGVVVVVVVGG.AACC',
+      '.ACCCCA.GPPPPPPPPPG.ACCC',
+      '.ACCCCA.KPPPPPPPPPK.ACCC',
+      '.ACCCCA.KPPPPPPPPPK.ACCC',
+      '.ACCCCA..VVVVVVVVV..ACCC',
+      '.AACCAA..PPPPPPPPP..AACC',
+      '..AAAA...GGGGGGGGG...AAA',
+      '.........LPPPP.PPPPL....',
+      '.........LPPP...PPPL....',
+      '.........LPPP...PPPL....',
+      '.........LPPP...PPPL....',
+      '.........LHPP...PPHL....',
+      '.........LHPP...PPHL....',
+      '.........LHPP...PPHL....',
+      '.........LHPP...PPHL....',
+      '.....RBBBLHPP...PPHL....',
+      '....RBBBBLHPP...PPHL....',
+      '...WBBBBBGGG....GGG.....',
+      '..WWBBB.................',
+      '.WWWWB..................',
+      '........................',
+      '........................',
+    ]
+  },
+
+  /* Stage 5 — S-Rank Sovereign: crown, mythril, royal cape, holy weapon aura */
+  5: {
+    palette: {
+      'S': '#d4a87a', // skin
+      'M': '#d0e8ff', // mythril plate (pale blue-white)
+      'V': '#f0f8ff', // mythril bright
+      'K': '#4060a0', // mythril shadow
+      'G': '#ffe840', // bright gold crown
+      'O': '#c0a000', // gold shadow
+      'C': '#8000c0', // royal purple cape
+      'A': '#a020e0', // cape highlight
+      'E': '#1a1a2a', // eyes
+      'F': '#d4a87a', // face
+      'W': '#ffffff', // holy blade white
+      'Y': '#ffff80', // holy aura yellow
+      'Z': '#ffffc0', // aura bright
+      'H': '#b0c8e0', // mythril mid
+      'L': '#80a0c0', // leg mythril
+      'R': '#ff8000', // gem/aura orange
+    },
+    grid: [
+      '.........GGOGGOGG.......',
+      '..........GGGGGGG.......',
+      '.........MMVVVVMMM......',
+      '........MMVVVVVVVMM.....',
+      '........MKFFFFFFVMK.....',
+      '........MKFFEFFFVMK.....',
+      '........MKFFFFFFVMK.....',
+      '........MKVVVVVVVMK.....',
+      '.........MMMMMMMM.......',
+      '..AAAA..GGMMMMMMMGG.AAAA',
+      '.AACCAA.GVVVVVVVVVG.AACC',
+      '.ACCCCYA.MVVVVVVVVM.ACCC',
+      '.ACCCCYA.KMMMMMMMMMK.ACC',
+      '.ACCCCYA.KMMMMMMMMMK.ACC',
+      '.ACCCCYA..VVVVVVVVV..ACC',
+      '.AACCAA..MMMMMMMMMM..AAC',
+      '..AAAA...GGGGRRGGGG...AA',
+      '.........LMMMM.MMMML....',
+      '.........LMMM...MMML....',
+      '.........LMMM...MMML....',
+      '.........LMMM...MMML....',
+      '.........LHMM...MMHL....',
+      '.........LHMM...MMHL....',
+      '.........LHMM...MMHL....',
+      '.........LHMM...MMHL....',
+      '....YYYYYLHMM...MMHL....',
+      '...YYYYZZLHMM...MMHL....',
+      '..WWYYYYZGGG....GGG.....',
+      '.WWWWYYYY...............',
+      'WWWWWYYYY...............',
+      '........................',
+      '........................',
+    ]
+  },
+
+}; // end SPRITES
+
+
+/* ================================================================
+   GAME STATE
+   ================================================================ */
+const DEFAULT_STATE = {
+  // Core stats (0–100)
+  discipline: 50,
+  energy:     60,
+  focus:      40,
+  sales:      30,
+  happiness:  55,
+  xp:         0,
+
+  // Economy
+  gold:   400,
+
+  // Progression
+  level:  1,
+  stage:  0,   // 0–5 maps to E→S rank
+  day:    1,
+  streak: 0,
+
+  // Time tracking
+  isNight:     false,
+  lastActionTs: null,
+
+  // Spending log entries: [{day, amount, note}]
+  spendLog: [],
+
+  // Quest completion flags
+  questsDone: {},
+
+  // Reset-click counter for the title badge
+  resetClicks: 0,
+};
+
+// Live game state (populated from localStorage or defaults)
+let G = {};
+
+/* Evolution level thresholds for each stage */
+const STAGE_THRESHOLDS = [0, 5, 12, 22, 35, 50];
+
+/* Rank names per stage */
+const RANK_NAMES = [
+  'E-RANK', 'D-RANK', 'C-RANK', 'B-RANK', 'A-RANK', 'S-RANK'
+];
+
+/* Evolution flavor text per stage */
+const EVO_DESCS = [
+  '', // stage 0 (no evolution to show)
+  'Bound by potential. The path of discipline begins — D-Rank Recruit rises.',
+  'Steel forged through hardship. C-Rank Warrior strides onto the battlefield.',
+  'Honor and iron — a true Knight emerges. B-Rank Sovereign of discipline.',
+  'A Champion reborn in glory. A-Rank — few ever reach this height.',
+  'The highest throne. S-Rank Sovereign — Sir Bap, forever arise.',
+];
+
+
+/* ================================================================
+   QUEST DEFINITIONS
+   ================================================================ */
+const QUESTS = [
+  {
+    id:    'lv5',
+    icon:  '⚔️',
+    name:  'First Promotion',
+    desc:  'Reach Level 5',
+    check: () => G.level >= 5,
+  },
+  {
+    id:    'lv12',
+    icon:  '🛡️',
+    name:  'Warrior\'s Path',
+    desc:  'Reach Level 12',
+    check: () => G.level >= 12,
+  },
+  {
+    id:    'lv22',
+    icon:  '🏰',
+    name:  'Knight\'s Honor',
+    desc:  'Reach Level 22',
+    check: () => G.level >= 22,
+  },
+  {
+    id:    'lv35',
+    icon:  '🌟',
+    name:  'Champion Ascends',
+    desc:  'Reach Level 35',
+    check: () => G.level >= 35,
+  },
+  {
+    id:    'lv50',
+    icon:  '👑',
+    name:  'Sovereign Arise',
+    desc:  'Reach Level 50',
+    check: () => G.level >= 50,
+  },
+  {
+    id:    'gold1000',
+    icon:  '💰',
+    name:  'Treasury Growing',
+    desc:  'Accumulate 1000 Gold',
+    check: () => G.gold >= 1000,
+  },
+  {
+    id:    'streak7',
+    icon:  '🔥',
+    name:  'Week Warrior',
+    desc:  'Maintain a 7-Day Streak',
+    check: () => G.streak >= 7,
+  },
+  {
+    id:    'streak30',
+    icon:  '🌙',
+    name:  'Month of Discipline',
+    desc:  'Maintain a 30-Day Streak',
+    check: () => G.streak >= 30,
+  },
+  {
+    id:    'disc100',
+    icon:  '🧘',
+    name:  'Iron Will',
+    desc:  'Max out Discipline (100)',
+    check: () => G.discipline >= 100,
+  },
+  {
+    id:    'sales100',
+    icon:  '📈',
+    name:  'Sales Legend',
+    desc:  'Max out Sales (100)',
+    check: () => G.sales >= 100,
+  },
+  {
+    id:    'day10',
+    icon:  '📅',
+    name:  'Ten Days Strong',
+    desc:  'Survive 10 Days',
+    check: () => G.day >= 10,
+  },
+  {
+    id:    'gold5000',
+    icon:  '🏦',
+    name:  'Wealthy Warrior',
+    desc:  'Accumulate 5000 Gold',
+    check: () => G.gold >= 5000,
+  },
+];
+
+
+/* ================================================================
+   PERSISTENCE — localStorage save / load / reset
+   ================================================================ */
+const SAVE_KEY = 'arisepet_v3_state';
+
+function saveGame() {
+  try {
+    localStorage.setItem(SAVE_KEY, JSON.stringify(G));
+  } catch (err) {
+    console.warn('Save failed:', err);
+  }
+}
+
+function loadGame() {
+  try {
+    const raw = localStorage.getItem(SAVE_KEY);
+    if (raw) {
+      const saved = JSON.parse(raw);
+      // Merge saved state with defaults (handles new fields added later)
+      G = Object.assign({}, DEFAULT_STATE, saved);
+      return;
+    }
+  } catch (err) {
+    console.warn('Load failed, starting fresh:', err);
+  }
+  G = Object.assign({}, DEFAULT_STATE);
+}
+
+function resetGame() {
+  localStorage.removeItem(SAVE_KEY);
+  G = Object.assign({}, DEFAULT_STATE);
+  G.resetClicks = 0;
+  saveGame();
+  renderAll();
+  addLog('Game reset. Arise again, Sir Bap.');
+  showBanner('RESET — ARISE AGAIN');
+}
+
+/* Hidden reset: click rank badge 5 times within ~3 seconds */
+let resetClickCount = 0;
+let resetClickTimer = null;
+
+function handleRankBadgeClick() {
+  resetClickCount++;
+  if (resetClickCount >= 5) {
+    resetClickCount = 0;
+    clearTimeout(resetClickTimer);
+    if (confirm('Reset all game data? This cannot be undone.')) {
+      resetGame();
+    }
+  } else {
+    clearTimeout(resetClickTimer);
+    resetClickTimer = setTimeout(() => { resetClickCount = 0; }, 3000);
+  }
+}
+
+document.getElementById('rank-badge').addEventListener('click', handleRankBadgeClick);
+
+
+/* ================================================================
+   PIXEL ART RENDERER
+   ================================================================ */
+
+/**
+ * Renders a sprite stage onto a given canvas context.
+ * The canvas is 24×32 pixels (each pixel = 1 unit),
+ * then scaled up via CSS to 192×256 (8× magnification).
+ */
+function renderSprite(ctx, stageIndex) {
+  const sprite = SPRITES[stageIndex];
+  if (!sprite) return;
+
+  const { palette, grid } = sprite;
+  const canvasWidth  = 24;
+  const canvasHeight = 32;
+
+  // Clear to transparent
+  ctx.clearRect(0, 0, canvasWidth, canvasHeight);
+
+  for (let row = 0; row < Math.min(grid.length, canvasHeight); row++) {
+    const rowStr = grid[row];
+    for (let col = 0; col < Math.min(rowStr.length, canvasWidth); col++) {
+      const char = rowStr[col];
+      if (char === '.' || char === ' ') continue; // transparent
+      const color = palette[char];
+      if (!color) continue;
+      ctx.fillStyle = color;
+      ctx.fillRect(col, row, 1, 1);
+    }
+  }
+}
+
+/** Render the main pet canvas */
+function renderPet() {
+  const canvas = document.getElementById('pet-canvas');
+  const ctx    = canvas.getContext('2d');
+  renderSprite(ctx, G.stage);
+}
+
+/** Render the evolution overlay canvas at the given stage */
+function renderEvolutionCanvas(stageIndex) {
+  const canvas = document.getElementById('evo-canvas');
+  const ctx    = canvas.getContext('2d');
+  renderSprite(ctx, stageIndex);
+}
+
+
+/* ================================================================
+   STAT UTILITIES
+   ================================================================ */
+
+/** Clamp a value between min and max */
+function clamp(val, min, max) {
+  return Math.max(min, Math.min(max, val));
+}
+
+/** Modify a stat by delta, clamping to [0, 100] */
+function modStat(statName, delta) {
+  G[statName] = clamp(G[statName] + delta, 0, 100);
+}
+
+/** Streak XP multiplier */
+function streakMultiplier() {
+  if (G.streak >= 30) return 2.0;
+  if (G.streak >= 14) return 1.75;
+  if (G.streak >= 7)  return 1.5;
+  if (G.streak >= 3)  return 1.25;
+  return 1.0;
+}
+
+/** Natural daily stat decay — call when Sleep is used */
+function applyDailyDecay() {
+  // Sales slowly decay each day
+  modStat('sales', -3);
+}
+
+
+/* ================================================================
+   LEVELING SYSTEM
+   ================================================================ */
+
+/** XP needed to reach level N (simple quadratic curve) */
+function xpForLevel(level) {
+  return Math.floor(10 * level * (level + 1) / 2);
+}
+
+/**
+ * Award XP, trigger level-ups & evolutions as needed.
+ * Returns true if evolution occurred.
+ */
+function awardXP(baseAmount) {
+  const mult = streakMultiplier();
+  const earned = Math.round(baseAmount * mult);
+  G.xp += earned;
+
+  let evolved = false;
+
+  // Check for level-ups
+  while (G.level < 99 && G.xp >= xpForLevel(G.level)) {
+    G.xp -= xpForLevel(G.level);
+    G.level++;
+    addLog(`✦ LEVEL UP! Now Level ${G.level}!`);
+    showBanner(`LV ${G.level} REACHED!`);
+
+    // Check for evolution
+    const newStage = STAGE_THRESHOLDS.findIndex((thresh, i) => {
+      return G.level >= thresh &&
+             (i === STAGE_THRESHOLDS.length - 1 || G.level < STAGE_THRESHOLDS[i + 1]);
+    });
+
+    if (newStage > G.stage && newStage >= 0 && newStage <= 5) {
+      G.stage = newStage;
+      evolved  = true;
+      setTimeout(() => triggerEvolution(newStage), 500);
+    }
+  }
+
+  return evolved;
+}
+
+
+/* ================================================================
+   ACTION DEFINITIONS & HANDLERS
+   ================================================================ */
+
+/**
+ * Core actions and their stat effects.
+ * Each action: { label, emoji, particles, effects: fn(G) => void, xp, logMsg }
+ */
+const ACTIONS = {
+
+  sleep: {
+    label:     'SLEEP',
+    emoji:     '😴',
+    particles: ['💤', '⭐', '🌙'],
+    xp:        8,
+    logMsg:    () => 'Rested well. Energy restored.',
+    effects() {
+      modStat('energy',     +25);
+      modStat('discipline', +10);
+      modStat('happiness',  +5);
+      // Sleep advances the day
+      G.day++;
+      G.streak++;
+      // Unlock workout after day 3
+      updateWorkoutLock();
+      applyDailyDecay();
+      toggleDayNight();
+    }
+  },
+
+  save: {
+    label:     'SAVE',
+    emoji:     '🏦',
+    particles: ['💰', '🏦'],
+    xp:        6,
+    logMsg:    () => `Saved money. +30g. Discipline grows.`,
+    effects() {
+      modStat('discipline', +8);
+      modStat('happiness',  -2);
+      G.gold += 30;
+    }
+  },
+
+  market: {
+    label:     'MARKET',
+    emoji:     '📣',
+    particles: ['📣', '📈', '✨'],
+    xp:        7,
+    logMsg:    () => 'Marketed today. Focus sharpened.',
+    effects() {
+      modStat('focus',      +12);
+      modStat('energy',     -5);
+      modStat('discipline', +3);
+    }
+  },
+
+  sell: {
+    label:     'SELL',
+    emoji:     '🤝',
+    particles: ['💰', '🤝', '📈'],
+    xp:        10,
+    logMsg:    () => `Closed a deal. +50g. Sales up.`,
+    effects() {
+      modStat('sales',    +15);
+      modStat('focus',    +5);
+      modStat('energy',   -5);
+      G.gold += 50;
+    }
+  },
+
+  train: {
+    label:     'TRAIN',
+    emoji:     '⚔️',
+    particles: ['⚔️', '💥', '🔥'],
+    xp:        12,
+    logMsg:    () => 'Trained hard. All stats rise. Energy spent.',
+    effects() {
+      modStat('discipline', +5);
+      modStat('focus',      +5);
+      modStat('sales',      +5);
+      modStat('happiness',  +3);
+      modStat('energy',     -15);
+    }
+  },
+
+  build: {
+    label:     'BUILD',
+    emoji:     '🔨',
+    particles: ['🔨', '🏗️', '⚡'],
+    xp:        8,
+    logMsg:    () => 'Built something. Happiness up, focus drained.',
+    effects() {
+      modStat('happiness', +12);
+      modStat('focus',     -8);
+      modStat('energy',    -3);
+    }
+  },
+
+  date: {
+    label:     'DATE',
+    emoji:     '💕',
+    particles: ['💕', '❤️', '✨'],
+    xp:        5,
+    logMsg:    () => 'Enjoyed quality time. Happiness and energy boosted.',
+    effects() {
+      modStat('happiness', +15);
+      modStat('energy',    +10);
+      modStat('focus',     -5);
+    }
+  },
+
+  workout: {
+    label:     'WORKOUT',
+    emoji:     '💪',
+    particles: ['💪', '🔥', '⚡'],
+    xp:        10,
+    logMsg:    () => 'Crushed a workout. Discipline and energy rise.',
+    effects() {
+      modStat('discipline', +12);
+      modStat('energy',     +8);
+      modStat('happiness',  -5);
+      modStat('focus',      +3);
+    },
+    locked:    () => G.day < 3,
+  },
+
+  blow: {
+    label:     'BLOW $',
+    emoji:     '🎰',
+    particles: ['💸', '🎰', '😈'],
+    xp:        2, // very little XP for blowing money
+    // logMsg is omitted — effects() handles the log with the specific amount
+    effects() {
+      const loss = 40 + Math.floor(Math.random() * 60); // 40–100g lost
+      modStat('happiness',  +20);
+      modStat('discipline', -15);
+      G.gold = Math.max(0, G.gold - loss);
+      // Log with specific amount (set on action for doAction to use)
+      ACTIONS.blow._lastLog = `💸 Blew ${loss}g — discipline suffers, feels good though.`;
+    },
+    logMsg() { return ACTIONS.blow._lastLog || 'Blew cash recklessly.'; },
+  },
+
+  budget: {
+    label:     'BUDGET',
+    emoji:     '📋',
+    particles: ['📋', '✅', '💡'],
+    xp:        6,
+    logMsg:    () => 'Reviewed the budget. Discipline and focus sharpen.',
+    effects() {
+      modStat('discipline', +10);
+      modStat('focus',      +10);
+      modStat('energy',     -3);
+    }
+  },
+
+};
+
+/** Main action dispatcher */
+function doAction(actionKey) {
+  const action = ACTIONS[actionKey];
+  if (!action) return;
+
+  // Locked check
+  if (action.locked && action.locked()) {
+    showBanner('ACTION LOCKED');
+    addLog(`${action.label} is not yet available.`);
+    return;
+  }
+
+  // Apply effects
+  action.effects();
+
+  // Award XP (sleep doesn't give XP directly — the rest cure does)
+  const evolved = awardXP(action.xp || 0);
+
+  // Set mood based on action
+  setMood(actionKey);
+
+  // Log message
+  addLog(action.logMsg ? action.logMsg() : action.label);
+
+  // Spawn floating particles
+  spawnParticles(action.particles || [action.emoji]);
+
+  // Check quests
+  checkQuests();
+
+  // Save & re-render
+  saveGame();
+  renderAll();
+
+  // Brief mood reset
+  if (!evolved) {
+    setTimeout(() => { setMood('idle'); renderMood(); }, 3000);
+  }
+}
+
+/** Toggle day/night when sleeping */
+function toggleDayNight() {
+  G.isNight = !G.isNight;
+  document.getElementById('viewport').className = G.isNight ? 'night' : 'day';
+  renderStars();
+}
+
+/** Lock/unlock workout button based on day count */
+function updateWorkoutLock() {
+  const btn = document.getElementById('btn-workout');
+  if (G.day >= 3) {
+    btn.classList.remove('locked');
+  } else {
+    btn.classList.add('locked');
+  }
+}
+
+
+/* ================================================================
+   MOOD SYSTEM
+   ================================================================ */
+const MOOD_MAP = {
+  idle:    { text: 'IDLE',      color: '#4a6a90' },
+  sleep:   { text: 'RESTING',   color: '#60b0ff' },
+  save:    { text: 'SAVING',    color: '#f0c848' },
+  market:  { text: 'MARKETING', color: '#b070ff' },
+  sell:    { text: 'CLOSING',   color: '#f0c848' },
+  train:   { text: 'TRAINING',  color: '#ff4455' },
+  build:   { text: 'BUILDING',  color: '#40e878' },
+  date:    { text: 'LOVING',    color: '#ff7090' },
+  workout: { text: 'GRINDING',  color: '#ff8020' },
+  blow:    { text: 'YOLO',      color: '#ff4455' },
+  budget:  { text: 'PLANNING',  color: '#60b0ff' },
+  happy:   { text: 'HAPPY',     color: '#40e878' },
+  sad:     { text: 'EXHAUSTED', color: '#ff4455' },
+};
+
+let currentMood = 'idle';
+
+function setMood(mood) {
+  currentMood = MOOD_MAP[mood] ? mood : 'idle';
+}
+
+function renderMood() {
+  const label  = document.getElementById('mood-label');
+  const moodDef = MOOD_MAP[currentMood] || MOOD_MAP.idle;
+  label.textContent = moodDef.text;
+  label.style.color = moodDef.color;
+}
+
+
+/* ================================================================
+   STAR BACKGROUND
+   ================================================================ */
+function renderStars() {
+  const container = document.getElementById('stars-container');
+  container.innerHTML = '';
+
+  // More stars at night
+  const count = G.isNight ? 60 : 20;
+
+  for (let i = 0; i < count; i++) {
+    const star = document.createElement('div');
+    star.className = 'star-dot';
+    star.style.left   = `${Math.random() * 100}%`;
+    star.style.top    = `${Math.random() * 100}%`;
+    star.style.setProperty('--twinkle-dur',   `${2 + Math.random() * 4}s`);
+    star.style.setProperty('--twinkle-delay',  `${Math.random() * 4}s`);
+    // Night stars are brighter
+    if (G.isNight) star.style.opacity = '0.3';
+    container.appendChild(star);
+  }
+}
+
+
+/* ================================================================
+   FLOATING PARTICLE EFFECTS
+   ================================================================ */
+function spawnParticles(emojis) {
+  const layer = document.getElementById('effects-layer');
+  const count = Math.min(emojis.length, 3);
+
+  for (let i = 0; i < count; i++) {
+    const el = document.createElement('div');
+    el.className   = 'float-particle';
+    el.textContent = emojis[i % emojis.length];
+
+    // Random horizontal spread around center
+    const x = 30 + Math.random() * 40; // 30–70% of width
+    const y = 40 + Math.random() * 30; // 40–70% of height
+    el.style.left = `${x}%`;
+    el.style.top  = `${y}%`;
+    el.style.animationDelay = `${i * 0.15}s`;
+
+    layer.appendChild(el);
+    setTimeout(() => el.remove(), 1500);
+  }
+}
+
+
+/* ================================================================
+   NOTIFICATION BANNER
+   ================================================================ */
+let bannerTimer = null;
+
+function showBanner(text) {
+  const el = document.getElementById('banner');
+  el.textContent = text;
+  el.classList.add('show');
+
+  clearTimeout(bannerTimer);
+  bannerTimer = setTimeout(() => {
+    el.classList.remove('show');
+  }, 2500);
+}
+
+
+/* ================================================================
+   ACHIEVEMENT POPUP
+   ================================================================ */
+let achievementTimer = null;
+
+function showAchievement(name) {
+  const popup = document.getElementById('achievement-popup');
+  document.getElementById('achievement-name').textContent = name;
+
+  popup.classList.add('visible');
+
+  clearTimeout(achievementTimer);
+  achievementTimer = setTimeout(() => {
+    popup.classList.remove('visible');
+  }, 4000);
+}
+
+
+/* ================================================================
+   EVENT LOG
+   ================================================================ */
+const MAX_LOG_ENTRIES = 30;
+let logEntries = [];
+
+function addLog(message) {
+  const time = `DAY ${G.day}`;
+  logEntries.unshift({ time, message });
+  if (logEntries.length > MAX_LOG_ENTRIES) {
+    logEntries = logEntries.slice(0, MAX_LOG_ENTRIES);
+  }
+  renderLog();
+}
+
+function renderLog() {
+  const container = document.getElementById('event-log');
+  container.innerHTML = logEntries.map(entry =>
+    `<div class="log-entry">
+      <span class="log-time">[${entry.time}]</span>
+      <span class="log-action">${entry.message}</span>
+    </div>`
+  ).join('');
+}
+
+
+/* ================================================================
+   EVOLUTION CINEMATIC
+   ================================================================ */
+function triggerEvolution(newStage) {
+  const overlay = document.getElementById('evo-overlay');
+
+  // Update text
+  document.getElementById('evo-rank-name').textContent = RANK_NAMES[newStage];
+  document.getElementById('evo-desc').textContent     = EVO_DESCS[newStage];
+
+  // Render the new sprite on the evo canvas
+  renderEvolutionCanvas(newStage);
+
+  // Show flash then overlay
+  const flash = overlay.querySelector('.evo-flash');
+  flash.style.animation = 'none';
+  // Trigger reflow to restart animation
+  void flash.offsetWidth;
+  flash.style.animation = 'evo-flash-anim 0.6s ease-out';
+
+  overlay.classList.add('active');
+  addLog(`✦ EVOLVED to ${RANK_NAMES[newStage]}!`);
+}
+
+function dismissEvolution() {
+  document.getElementById('evo-overlay').classList.remove('active');
+  setMood('happy');
+  renderAll();
+  setTimeout(() => { setMood('idle'); renderMood(); }, 4000);
+}
+
+
+/* ================================================================
+   SPENDING LOG OVERLAY
+   ================================================================ */
+function openSpendOverlay() {
+  renderSpendHistory();
+  document.getElementById('spend-overlay').classList.add('active');
+}
+
+function logSpending() {
+  const input = document.getElementById('spend-input');
+  const amount = parseFloat(input.value);
+
+  if (isNaN(amount) || amount < 0) {
+    showBanner('ENTER A VALID AMOUNT');
+    return;
+  }
+
+  let note = '';
+
+  if (amount === 0) {
+    // Perfect day — big discipline boost
+    modStat('discipline', +15);
+    modStat('happiness',  +5);
+    awardXP(10);
+    note = '✅ Perfect day!';
+    showBanner('PERFECT DAY — DISCIPLINE +15');
+  } else if (amount <= 30) {
+    // Reasonable — minor discipline hit
+    modStat('discipline', -3);
+    note = '👍 Reasonable spend.';
+    showBanner('REASONABLE SPEND');
+  } else if (amount <= 50) {
+    // Moderate
+    modStat('discipline', -8);
+    modStat('happiness',  +5);
+    note = '⚠️ A bit much.';
+    showBanner('OVERSPENDING WARNING');
+  } else {
+    // Punishment
+    const penalty = Math.floor(amount / 10);
+    modStat('discipline', -15);
+    G.gold = Math.max(0, G.gold - penalty);
+    note = `🔴 Reckless! -${penalty}g penalty.`;
+    showBanner(`RECKLESS — DISCIPLINE SUFFERS`);
+  }
+
+  // Record in log
+  G.spendLog.unshift({ day: G.day, amount, note });
+  if (G.spendLog.length > 20) G.spendLog = G.spendLog.slice(0, 20);
+
+  addLog(`Spending logged: $${amount} — ${note}`);
+  input.value = '';
+
+  checkQuests();
+  saveGame();
+  renderAll();
+  renderSpendHistory();
+}
+
+function renderSpendHistory() {
+  const container = document.getElementById('spend-history');
+  if (!G.spendLog || G.spendLog.length === 0) {
+    container.innerHTML = '<p style="font-size:10px;color:var(--color-text-muted);text-align:center;">No spending logged yet.</p>';
+    return;
+  }
+  container.innerHTML = G.spendLog.map(entry =>
+    `<div class="spend-entry">
+      <span class="spend-day-label">Day ${entry.day}</span>
+      <span class="spend-amount">$${entry.amount}</span>
+      <span class="spend-result">${entry.note}</span>
+    </div>`
+  ).join('');
+}
+
+
+/* ================================================================
+   QUEST LOG OVERLAY
+   ================================================================ */
+function openQuestOverlay() {
+  renderQuestList();
+  document.getElementById('quest-overlay').classList.add('active');
+}
+
+function renderQuestList() {
+  const container = document.getElementById('quest-list');
+  container.innerHTML = QUESTS.map(q => {
+    const done   = !!G.questsDone[q.id];
+    const active = !done && q.check();
+    const cls    = done ? 'completed' : '';
+    const icon   = done ? '✅' : (active ? '🔄' : '🔒');
+    return `<div class="quest-item ${cls}">
+      <span class="quest-icon">${q.icon}</span>
+      <div class="quest-info">
+        <div class="quest-name">${q.name}</div>
+        <div class="quest-desc">${q.desc}</div>
+      </div>
+      <span class="quest-status">${icon}</span>
+    </div>`;
+  }).join('');
+}
+
+/** Check all quests — trigger achievements for newly completed ones */
+function checkQuests() {
+  QUESTS.forEach(q => {
+    if (!G.questsDone[q.id] && q.check()) {
+      G.questsDone[q.id] = true;
+      showAchievement(q.name);
+      addLog(`✦ QUEST COMPLETE: ${q.name}`);
+    }
+  });
+}
+
+
+/* ================================================================
+   OVERLAY MANAGEMENT
+   ================================================================ */
+function closeOverlay(overlayId) {
+  document.getElementById(overlayId).classList.remove('active');
+}
+
+// Close overlays on clicking the dark background
+document.querySelectorAll('.overlay').forEach(overlay => {
+  overlay.addEventListener('click', (e) => {
+    if (e.target === overlay) {
+      overlay.classList.remove('active');
+    }
+  });
+});
+
+
+/* ================================================================
+   FULL RENDER — updates all UI elements from game state
+   ================================================================ */
+function renderAll() {
+  renderStats();
+  renderTopBar();
+  renderPet();
+  renderMood();
+  updateWorkoutLock();
+}
+
+function renderTopBar() {
+  document.getElementById('rank-badge').textContent    = RANK_NAMES[G.stage];
+  document.getElementById('level-display').textContent = `LV ${G.level}`;
+  document.getElementById('gold-display').textContent  = `💰 ${G.gold}g`;
+  document.getElementById('day-display').textContent   = `DAY ${G.day}`;
+  document.getElementById('streak-display').textContent= `🔥${G.streak}`;
+}
+
+function renderStats() {
+  const STAT_NAMES = ['discipline', 'energy', 'focus', 'sales', 'happiness', 'xp'];
+
+  STAT_NAMES.forEach(stat => {
+    // For XP: show progress toward next level
+    let value, pct;
+    if (stat === 'xp') {
+      const needed = xpForLevel(G.level);
+      value = G.xp;
+      pct   = needed > 0 ? Math.min(100, Math.round(G.xp / needed * 100)) : 100;
+    } else {
+      value = Math.round(G[stat]);
+      pct   = clamp(value, 0, 100);
+    }
+
+    const bar = document.getElementById(`bar-${stat}`);
+    const val = document.getElementById(`val-${stat}`);
+
+    if (bar) {
+      bar.style.width = `${pct}%`;
+      // Add danger class if below 25
+      if (pct < 25 && stat !== 'xp') {
+        bar.classList.add('danger');
+      } else {
+        bar.classList.remove('danger');
+      }
+    }
+
+    if (val) {
+      val.textContent = stat === 'xp' ? `${pct}%` : value;
+    }
+  });
+}
+
+
+/* ================================================================
+   INITIALIZATION
+   ================================================================ */
+function init() {
+  loadGame();
+
+  // Ensure viewport day/night matches saved state
+  document.getElementById('viewport').className = G.isNight ? 'night' : 'day';
+
+  // Render stars
+  renderStars();
+
+  // Full render
+  renderAll();
+
+  // Set initial log entry if fresh
+  if (!G.spendLog || G.spendLog.length === 0) {
+    // Welcome message already in HTML
+  }
+
+  // Check if workout should be unlocked
+  updateWorkoutLock();
+
+  // Start idle animation on pet
+  document.getElementById('pet-canvas').classList.add('idle-anim');
+
+  console.log('ARISE PET v3 — initialized. Sir Bap awaits your commands.');
+}
+
+// Boot the game when DOM is ready
+window.addEventListener('DOMContentLoaded', init);
+</script>
+
+</body>
+</html>
