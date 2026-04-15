@@ -15,6 +15,8 @@ body{background:var(--void);color:var(--t);font-family:var(--ui);font-weight:500
 /* TOP */
 .top{padding:8px 12px;border-bottom:1px solid rgba(58,143,255,0.12);flex-shrink:0;display:flex;align-items:center;gap:6px}
 .t-rk{font-family:var(--ti);font-size:9px;letter-spacing:1px;color:var(--gd);padding:2px 8px;border:1px solid var(--gd2);transition:all 0.4s}
+.t-rk.s-rank{animation:sRankGlow 2s ease-in-out infinite}
+@keyframes sRankGlow{0%,100%{text-shadow:0 0 8px rgba(240,208,96,0.5);box-shadow:0 0 6px rgba(240,208,96,0.2)}50%{text-shadow:0 0 18px rgba(240,208,96,1);box-shadow:0 0 14px rgba(240,208,96,0.5)}}
 .t-nm{font-family:var(--ti);font-size:10px;color:var(--w);letter-spacing:2px}
 .t-lv{font-family:var(--ti);font-size:8px;color:var(--t3);letter-spacing:1px;margin-left:auto}
 .t-gd{font-family:var(--ti);font-size:9px;color:var(--gd);letter-spacing:1px}
@@ -36,12 +38,13 @@ body{background:var(--void);color:var(--t);font-family:var(--ui);font-weight:500
 img{image-rendering:pixelated;image-rendering:crisp-edges}
 #pet{width:192px;height:256px;transition:transform 0.15s;position:relative;z-index:2}
 #sushi{width:64px;height:64px;position:absolute;bottom:calc(50% - 80px);right:calc(50% - 130px);z-index:3}
-.shw{width:90px;height:10px;background:radial-gradient(ellipse,rgba(0,0,0,0.35),transparent 70%);z-index:1;margin-top:-2px}
+.shw{width:90px;height:10px;background:radial-gradient(ellipse,rgba(0,0,0,0.35),transparent 70%);z-index:1;margin-top:-2px;animation:shwPulse 3s ease-in-out infinite}
+@keyframes shwPulse{0%,100%{opacity:0.7;transform:scaleX(1)}50%{opacity:1;transform:scaleX(1.08)}}
 .mood{font-family:var(--ti);font-size:7px;letter-spacing:2px;color:var(--t3);transition:color 0.3s;z-index:2}
 .emo{position:absolute;pointer-events:none;font-size:22px;z-index:10;animation:ef 1.3s ease-out forwards}
 @keyframes ef{0%{opacity:1;transform:translateY(0) scale(1)}50%{opacity:1}100%{opacity:0;transform:translateY(-70px) scale(0.5)}}
-.star{position:absolute;width:2px;height:2px;background:#fff;border-radius:50%;opacity:0.12;animation:tw var(--d) ease-in-out infinite;z-index:0}
-@keyframes tw{0%,100%{opacity:0.06}50%{opacity:0.3}}
+.star{position:absolute;background:#fff;border-radius:50%;opacity:0.12;animation:tw var(--d) ease-in-out infinite;z-index:0}
+@keyframes tw{0%,100%{opacity:0.04;transform:scale(0.8)}50%{opacity:0.4;transform:scale(1.2)}}
 .ef{position:absolute;inset:0;pointer-events:none;z-index:8;overflow:hidden}
 
 /* EVENT BANNER */
@@ -55,8 +58,8 @@ img{image-rendering:pixelated;image-rendering:crisp-edges}
 /* ACTIONS */
 .ac{display:grid;grid-template-columns:repeat(4,1fr);gap:2px;padding:6px 6px 2px;flex-shrink:0;background:var(--p2);border-top:1px solid var(--gb)}
 .ac2{display:grid;grid-template-columns:repeat(4,1fr);gap:2px;padding:2px 6px 6px;flex-shrink:0;background:var(--p2)}
-.ab{font-family:var(--ui);font-weight:600;font-size:11px;padding:8px 2px;background:rgba(58,143,255,0.05);color:var(--t);border:1px solid rgba(58,143,255,0.12);cursor:pointer;transition:all 0.1s;display:flex;flex-direction:column;align-items:center;gap:1px}
-.ab:hover:not(:disabled){background:rgba(58,143,255,0.1);border-color:var(--gb)}.ab:active:not(:disabled){transform:scale(0.94)}.ab:disabled{opacity:0.15;cursor:default}
+.ab{font-family:var(--ui);font-weight:600;font-size:11px;padding:8px 2px;background:rgba(58,143,255,0.05);color:var(--t);border:1px solid rgba(58,143,255,0.12);cursor:pointer;transition:all 0.18s;display:flex;flex-direction:column;align-items:center;gap:1px}
+.ab:hover:not(:disabled){background:rgba(58,143,255,0.14);border-color:rgba(58,143,255,0.5);box-shadow:0 0 8px rgba(58,143,255,0.2);color:var(--w)}.ab:active:not(:disabled){transform:scale(0.94)}.ab:disabled{opacity:0.15;cursor:default}
 .ab .i{font-size:16px}.ab .n{font-size:9px}.ab .su{font-family:var(--ti);font-size:6px;color:var(--t3);letter-spacing:0.5px}
 
 /* EVO OVERLAY */
@@ -2791,37 +2794,37 @@ death_knight:{
   },
 },
 
-// ─── BLOOD KNIGHT — Crimson plate, blood sword ───
-blood_knight:{
+// ─── SHADOW MONARCH — Black armor, purple crown, shadow aura (Solo Leveling) ───
+shadow_monarch:{
   3:{
     pal:{
-      o:'#180808',
-      c:'#902020',
-      C:'#a83028',
-      d:'#782020',
-      D:'#b84038',
-      p:'#e03030',
-      P:'#c02020',
-      v:'#e03030',
-      V:'#d02020',
-      s:'#902020',
-      S:'#a03030',
-      a:'#782020',
-      A:'#682020',
-      g:'#d02020',
-      G:'#b01818',
-      Y:'#e03030',
-      T:'#502020',
-      t:'#603030',
-      J:'#404040',
-      H:'#802828',
-      L:'#682020',
-      l:'#783030',
-      K:'#502828',
-      k:'#602830',
-      W:'#e83030',
-      X:'#f04040',
-      Q:'#d02020',
+      o:'#100818',
+      c:'#282048',
+      C:'#382860',
+      d:'#201838',
+      D:'#483870',
+      p:'#8040d0',
+      P:'#6030b0',
+      v:'#a050e0',
+      V:'#8030c8',
+      s:'#302048',
+      S:'#402858',
+      a:'#201838',
+      A:'#180828',
+      g:'#9040d8',
+      G:'#7030b8',
+      Y:'#a050e8',
+      T:'#282038',
+      t:'#383048',
+      J:'#303040',
+      H:'#302848',
+      L:'#202038',
+      l:'#303050',
+      K:'#181828',
+      k:'#282840',
+      W:'#b060f0',
+      X:'#c070ff',
+      Q:'#9040d8',
       f:'#f0c898',
       F:'#dab080',
       z:'#c09060',
@@ -2863,60 +2866,60 @@ blood_knight:{
   },
   4:{
     pal:{
-      o:'#180808',
-      c:'#a02828',
-      C:'#b83838',
-      d:'#882020',
-      D:'#c84848',
-      p:'#f04040',
-      P:'#d02828',
-      v:'#f04040',
-      V:'#e03030',
-      s:'#a02828',
-      S:'#b03838',
-      a:'#882020',
-      A:'#782020',
-      g:'#e02020',
-      G:'#c01818',
-      Y:'#f03030',
-      R:'#500810',
-      r:'#601018',
-      q:'#701820',
-      T:'#602828',
-      t:'#703838',
-      J:'#504848',
-      H:'#903030',
-      L:'#783030',
-      l:'#884040',
-      K:'#603030',
-      k:'#703838',
-      W:'#f04040',
-      X:'#ff5050',
-      Q:'#e02020',
-      Z:'#ff6060',
+      o:'#100818',
+      c:'#302058',
+      C:'#403070',
+      d:'#282048',
+      D:'#504880',
+      p:'#9050e0',
+      P:'#7040c0',
+      v:'#b060f0',
+      V:'#9040d8',
+      s:'#382858',
+      S:'#483868',
+      a:'#282048',
+      A:'#201838',
+      g:'#a050e0',
+      G:'#8040c8',
+      Y:'#b060f0',
+      R:'#200838',
+      r:'#301048',
+      q:'#402060',
+      T:'#383048',
+      t:'#484060',
+      J:'#383858',
+      H:'#403858',
+      L:'#302848',
+      l:'#404060',
+      K:'#202038',
+      k:'#303050',
+      W:'#c070ff',
+      X:'#d080ff',
+      Q:'#a050e0',
+      Z:'#e090ff',
       f:'#f0c898',
       F:'#dab080',
       z:'#c09060',
     },
     grid:[
-      '......PPPPppp...........',
-      '.....PPpppppp...........',
+      '......PPPPPpp...........',
+      '.....PPppppppp..........',
       '......oPPpPPo...........',
       '.....oDDDDDDDo..........',
       '.....oCCCCCCCo..........',
       '.....oCCDDDCCo..........',
-      '.R...oVVVVVVVo..........',
+      '.R...oVVVvvVVo..........',
       '.R....odddddo...........',
       '.R....zzFFFzz...........',
-      '.RYGGgsSSSSSsSGGY..Z....',
-      '.RYGgsSSSSSSSSSgGYZXX...',
-      '.R.GgAaSSSSSSSsaAgGZXX..',
-      '.r.GHAASSSSSSSSSAHGZWXX.',
-      '.r.GHAASSSSSSSSAAHGZWXX.',
-      '.r.GHAASSSSSSSSAAHG.WXX.',
-      '.q..HAASSSSSSSAAAH.QWWXQ',
-      '.q..HAAStTTTtSAAAH..QQQ.',
-      '.q...AAtTTTTTTtAAA...Q..',
+      '.RYGGgsSSSSSsSGGY.Z.....',
+      '.RYGGsSSSSSSSSSgGYZWX...',
+      '.R.GGAaSSSSSSSsaAgGZWX..',
+      '.r.GHAASSSSSSSSSAHGZWX..',
+      '.r.GHAASSSSSSSSAAHGZWX..',
+      '.r.GHAASSSSSSSSAAHGZWX..',
+      '.q..HAASSSSSSSAAAH.QWXQ.',
+      '.q..HAAJgJJJJgJAAH..QQQ.',
+      '.q...AAtTTTTtAAAH...QQ..',
       '.q...AATTTaTTTTAA.......',
       '.q....AaSSSSSsaA........',
       '..q...llAAAAAAll........',
@@ -2935,40 +2938,40 @@ blood_knight:{
   },
   5:{
     pal:{
-      o:'#180808',
-      c:'#b03030',
-      C:'#c84040',
-      d:'#982828',
-      D:'#d85050',
-      n:'#e02020',
-      N:'#c01818',
-      M:'#a01010',
-      v:'#f05050',
-      V:'#e03030',
-      s:'#b03030',
-      S:'#c04040',
-      a:'#982828',
-      A:'#883030',
-      g:'#f02020',
-      G:'#d01818',
-      Y:'#ff3030',
-      R:'#601020',
-      r:'#701820',
-      q:'#802030',
-      T:'#703838',
-      t:'#804848',
-      J:'#605858',
-      H:'#a03838',
-      L:'#884040',
-      l:'#985050',
-      K:'#704040',
-      k:'#804848',
-      W:'#ff5050',
-      X:'#ff6060',
-      Q:'#f02020',
-      Z:'#ff7070',
-      u:'#e02020',
-      U:'#c01818',
+      o:'#100818',
+      c:'#383068',
+      C:'#484888',
+      d:'#302858',
+      D:'#5860a0',
+      n:'#a050e0',
+      N:'#8040c8',
+      M:'#6030b0',
+      v:'#c070f8',
+      V:'#a050e0',
+      s:'#403870',
+      S:'#504880',
+      a:'#302858',
+      A:'#283060',
+      g:'#b060f0',
+      G:'#9040d8',
+      Y:'#c070ff',
+      R:'#300860',
+      r:'#401070',
+      q:'#502090',
+      T:'#504868',
+      t:'#605878',
+      J:'#484870',
+      H:'#505870',
+      L:'#404068',
+      l:'#505078',
+      K:'#303060',
+      k:'#404070',
+      W:'#d080ff',
+      X:'#e090ff',
+      Q:'#b060f0',
+      Z:'#f0a0ff',
+      u:'#a050e0',
+      U:'#8040c8',
       f:'#f0c898',
       F:'#dab080',
       z:'#c09060',
@@ -2980,18 +2983,18 @@ blood_knight:{
       '.....oDDDDDDDo..........',
       '.....oCCCCCCCo..........',
       '.....oCCDDDCCo..........',
-      '.R...oVVVVVVVo..........',
+      '.R...oVVVvvVVo..........',
       '.R....odddddo...........',
       '.R....zzFFFzz...........',
-      '.RYGGgsSSSSSsSGGYuZ.....',
-      '.RYGgsSSSSSSSSSgGUZXX...',
-      '.R.GgAaSSSSSSSSaAgUZWXX.',
-      '.r.GHAASSSSSSSSSAHUZWXX.',
-      '.r.GHAASSSSSSSSAAHUZWXX.',
-      '.q.GHAASSSSSSSSAAHG.WXX.',
-      '.q..HAASSSSSSSAAAH.QWWXQ',
-      '.q..HAAStTTTtSAAAH..QQQ.',
-      '.q...AAtTTTTTTtAAA..QQ..',
+      '.RYGGgsSSSSSsSGGYuZX....',
+      '.RYGGsSSSSSSSSSgGUZWX...',
+      '.R.GGAaSSSSSSSsaAgUZWX..',
+      '.r.GHAASSSSSSSSSAHUZWX..',
+      '.r.GHAASSSSSSSSAAHUZWX..',
+      '.q.GHAASSSSSSSSAAHGUZWX.',
+      '.q..HAASSSSSSSAAAH.QWXQ.',
+      '.q..HAAJgJJJJgJAAH.QQQQ.',
+      '.q...AAtTTTTtAAAH..QQ...',
       '.q...AATTTaTTTTAA.......',
       '.q....AaSSSSSsaA........',
       '..q...llAAAAAAll........',
@@ -3460,25 +3463,25 @@ const CLASSES={
       {name:'Death March',desc:'All decay rates reduced 30%',color:'#9040e0'}
     ],
     secret:true,
-    unlockHint:'Reach S-Rank once and prestige',
-    check:()=>(G.prestigeCount||0)>=1
+    unlockHint:'Survive 60+ days with low discipline',
+    check:()=>getDayNum()>=60&&G.disc<30||(G.prestigeCount||0)>=1
   },
-  blood_knight:{
-    name:'BLOOD KNIGHT',icon:'🩸',
-    desc:'Your discipline is forged in sacrifice. Every $0 day feeds the crimson blade.',
-    alignment:'Lawful Neutral',
-    weakness:'No weakness. The blood debt is already paid.',
+  shadow_monarch:{
+    name:'SHADOW MONARCH',icon:'👑',
+    desc:'From the shadows, you rose. Black armor, purple aura, undying will. All bow before the Monarch.',
+    alignment:'Lawful Evil',
+    weakness:'No weakness. Shadows consume all obstacles.',
     passives:['$0 spend days give +20 Discipline','Sell gives +50% gold','No decay penalty'],
     abilities:[
-      {name:'Blood Tithe',desc:'$0 spending days give +20 Discipline',color:'#e00030'},
-      {name:'Crimson Deal',desc:'Sell gives 50% more gold',color:'#e00030'}
+      {name:'Shadow Arise',desc:'$0 spending days give +20 Discipline',color:'#9040e0'},
+      {name:'Ruler\'s Authority',desc:'Sell gives 50% more gold',color:'#9040e0'}
     ],
     secret:true,
-    unlockHint:'Log $0 spending 5 times',
-    check:()=>(G.spendLog||[]).filter(e=>e.amt===0).length>=5
+    unlockHint:'Reach S-Rank or have all stats above 80',
+    check:()=>G.stage>=5||(G.disc>=80&&G.nrg>=80&&G.foc>=80&&G.sal>=80&&G.hap>=80)
   },
   necromancer:{
-    name:'NECROMANCER',icon:'👻',
+    name:'NECROMANCER',icon:'🩸',
     desc:'You raise the dead — past actions, forgotten habits, buried goals. All serve you now.',
     alignment:'Neutral Evil',
     weakness:'Happiness decays 50% faster. The undead feel no joy.',
@@ -3488,8 +3491,8 @@ const CLASSES={
       {name:'Soul Harvest',desc:'All actions give +2 bonus XP',color:'#40c060'}
     ],
     secret:true,
-    unlockHint:'Reach level 25',
-    check:()=>G.lv>=25
+    unlockHint:'Use Blow$ 20 times to embrace the dark path',
+    check:()=>(G.totalBlown||0)>=20
   },
   default:{
     name:'WANDERER',icon:'🗺',
@@ -3503,10 +3506,11 @@ const CLASSES={
 };
 
 // Priority order: secret classes first, then specific, then default
-const CLASS_ORDER=['death_knight','blood_knight','necromancer','berserker','fighter','warrior','thief','pyromancer','cleric','mage','sorcerer','knight','default'];
+const CLASS_ORDER=['death_knight','shadow_monarch','necromancer','berserker','fighter','warrior','thief','pyromancer','cleric','mage','sorcerer','knight','default'];
 
 function detectClass(){
-  for(const id of CLASS_ORDER){if(CLASSES[id].check())return id;}
+  // Check secret classes using their internal keys
+  for(const id of CLASS_ORDER){if(CLASSES[id]&&CLASSES[id].check())return id;}
   return 'default';
 }
 
@@ -3530,33 +3534,35 @@ function checkSeasonReset(){
 
 function triggerSeasonReset(){
   const prestige=(G.prestigeCount||0)+1;
+  const carryGold=Math.floor((G.gold||0)*0.25);
   const newState=freshState();
   newState.prestigeCount=prestige;
   newState.seasonStart=Date.now();
   newState.created=Date.now();
   newState.achv=[];
   newState.disc=20;newState.nrg=65;newState.foc=30;newState.sal=80;newState.hap=55;
-  newState.gold=600;
+  newState.gold=Math.max(600,carryGold);
   G=newState;
   saveGame();
-  showSeasonResetOverlay(prestige);
+  showSeasonResetOverlay(prestige,carryGold);
 }
 
-function showSeasonResetOverlay(prestige){
+function showSeasonResetOverlay(prestige,carryGold){
   const overlay=document.createElement('div');
   overlay.style.cssText='position:fixed;inset:0;z-index:100;background:rgba(5,5,16,0.98);display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:30px;';
   overlay.innerHTML=`
     <div style="font-family:var(--kr);font-size:10px;color:var(--t3);letter-spacing:3px;margin-bottom:10px">계절 리셋</div>
     <div style="font-family:var(--ti);font-size:16px;letter-spacing:4px;color:var(--gd);margin-bottom:8px">SEASON ${prestige} BEGIN</div>
-    <div style="font-size:40px;margin:12px 0">💀</div>
+    <div style="font-size:40px;margin:12px 0">👑</div>
     <p style="font-family:var(--ui);font-size:13px;color:var(--t2);max-width:280px;line-height:1.6;margin-bottom:16px">
       90 days have passed. Your character resets — but the prestige remains.<br>
-      <span style="color:var(--gd)">Prestige ${prestige}x — The journey restarts.</span>
+      <span style="color:var(--gd)">Prestige ${prestige}x — The journey restarts.</span><br>
+      <span style="color:var(--pr)">Gold carried over: ${carryGold||0}G (25% of savings)</span>
     </p>
     <button onclick="this.parentElement.remove();drawPet();upUI();updateButtonStates();" style="font-family:var(--ti);font-size:9px;letter-spacing:3px;padding:12px 28px;background:none;color:var(--gd);border:1px solid var(--gd2);cursor:pointer;">ARISE AGAIN</button>
   `;
   document.body.appendChild(overlay);
-  lo('SEASON RESET — Prestige '+prestige+'x. The cycle continues.','s');
+  lo('SEASON RESET — Prestige '+prestige+'x. Gold carried: '+(carryGold||0)+'G. The cycle continues.','s');
 }
 
 function detectAlignment(){
@@ -3594,7 +3600,7 @@ function getClassBonuses(){
   const cls=detectClass();
   const B={
     classId:cls,
-    sellBonus:cls==='thief'?1.35:cls==='blood_knight'?1.5:1,
+    sellBonus:cls==='thief'?1.35:cls==='shadow_monarch'?1.5:1,
     saveDiscBonus:cls==='mage'?0:0,
     trainAllBonus:cls==='warrior'?2:cls==='berserker'?2:cls==='knight'?3:0,
     trainBerserkerMult:cls==='berserker'?1.5:1,
@@ -3703,12 +3709,28 @@ function getDayNum(){return Math.floor((Date.now()-G.created)/86400000)+1;}
 // ═══ UI ═══
 function upUI(){
   G.disc=cl(G.disc);G.nrg=cl(G.nrg);G.foc=cl(G.foc);G.sal=cl(G.sal);G.hap=cl(G.hap);G.gold=Math.max(0,G.gold);
+  // Stat bars with class-specific colors per stat
+  const statColors={dB:'#f0c040',eB:'#40e878',fB:'#60b0ff',sB:'#b070ff',hB:'#ff70b0'};
   const bars=[{b:'dB',v:'dV',val:G.disc},{b:'eB',v:'eV',val:G.nrg},{b:'fB',v:'fV',val:G.foc},{b:'sB',v:'sV',val:G.sal},{b:'hB',v:'hV',val:G.hap}];
-  bars.forEach(d=>{const c=d.val<25?'var(--r)':d.val<50?'var(--gd)':'var(--g)';document.getElementById(d.b).style.width=d.val+'%';document.getElementById(d.b).style.background=c;document.getElementById(d.v).textContent=d.val;document.getElementById(d.v).style.color=c;});
+  bars.forEach(d=>{
+    const baseColor=statColors[d.b]||'var(--gl3)';
+    const lowColor=d.val<25?'var(--r)':d.val<50?'#e08020':baseColor;
+    document.getElementById(d.b).style.width=d.val+'%';
+    document.getElementById(d.b).style.background=lowColor;
+    document.getElementById(d.v).textContent=d.val;
+    document.getElementById(d.v).style.color=lowColor;
+  });
   const xpPct=Math.floor(G.xp/XP_PER_LV*100);
   document.getElementById('xB').style.width=xpPct+'%';document.getElementById('xV').textContent=G.xp;
   document.getElementById('gd').textContent=G.gold+'G';
-  document.getElementById('rk').textContent=STAGES[G.stage].rank;
+  // Rank badge with rank-specific colors
+  const rank=STAGES[G.stage].rank;
+  const rankEl=document.getElementById('rk');
+  rankEl.textContent=rank;
+  const rankStyles={E:{color:'#909090',border:'#606060',shadow:'none'},D:{color:'#40e878',border:'#30b050',shadow:'0 0 6px rgba(64,232,120,0.3)'},C:{color:'#60b0ff',border:'#4080d0',shadow:'0 0 6px rgba(96,176,255,0.3)'},B:{color:'#b070ff',border:'#8040d0',shadow:'0 0 8px rgba(176,112,255,0.4)'},A:{color:'#f0c848',border:'#c0a030',shadow:'0 0 10px rgba(240,200,72,0.5)'},S:{color:'#f0d060',border:'#d0a820',shadow:'0 0 14px rgba(240,208,96,0.7)'}};
+  const rs=rankStyles[rank]||rankStyles.E;
+  rankEl.style.color=rs.color;rankEl.style.borderColor=rs.border;rankEl.style.textShadow=rs.shadow;
+  if(rank==='S'){rankEl.classList.add('s-rank');}else{rankEl.classList.remove('s-rank');}
   document.getElementById('lv').textContent='LV '+G.lv;
   document.getElementById('dy').textContent=(isNight()?'NIGHT':'DAY')+' '+getDayNum();
   document.getElementById('vp').className='vp '+(isNight()?'night':'day');
@@ -4104,7 +4126,18 @@ setInterval(()=>{catF=!catF;document.getElementById('sushi').style.transform=cat
 
 // ═══ STARS ═══
 const vp=document.getElementById('vp');
-for(let i=0;i<18;i++){const s=document.createElement('div');s.className='star';s.style.left=Math.random()*100+'%';s.style.top=Math.random()*50+'%';s.style.setProperty('--d',(2+Math.random()*4)+'s');s.style.animationDelay=Math.random()*3+'s';vp.appendChild(s);}
+for(let i=0;i<24;i++){
+  const s=document.createElement('div');
+  s.className='star';
+  const sz=(Math.random()<0.2?3:Math.random()<0.5?2:1);
+  s.style.width=sz+'px';s.style.height=sz+'px';
+  s.style.left=Math.random()*100+'%';
+  s.style.top=Math.random()*60+'%';
+  s.style.setProperty('--d',(1.5+Math.random()*5)+'s');
+  s.style.animationDelay=Math.random()*4+'s';
+  if(sz===3)s.style.boxShadow='0 0 3px rgba(255,255,255,0.4)';
+  vp.appendChild(s);
+}
 
 // ═══ INIT ═══
 // Apply any decay that happened while away
