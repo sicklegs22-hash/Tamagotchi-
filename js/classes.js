@@ -217,6 +217,8 @@ export function getClassBonuses() {
     allGainMult: cls === 'death_knight' ? 1.25 : 1,
     decayMult: cls === 'death_knight' ? 0.7 : 1,
     focusDecayMult: cls === 'sorcerer' ? 1.3 : cls === 'fighter' ? 1.3 : 1,
+    // Happiness decay multipliers per class. death_knight uses 99 (effectively forces hap to floor)
+    // since hapCap=50 enforces the real ceiling; warrior/knight/mage take small penalties for discipline focus.
     hapDecayMult: { warrior: 1.2, knight: 1.25, mage: 1.2, necromancer: 1.5, death_knight: 99 }[cls] ?? 1,
     hapCap: cls === 'death_knight' ? 50 : 100,
     workoutCdMult: cls === 'warrior' ? 0.75 : cls === 'fighter' ? 0.75 : 1,

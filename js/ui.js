@@ -109,7 +109,7 @@ export function updateUI(detectClassOverride) {
   const prestigeLabel = document.getElementById('prestigeLabel');
   if (seasonLabel) seasonLabel.textContent = 'SEASON ' + (si.season + 1);
   if (seasonDays) seasonDays.textContent = '— ' + si.daysLeft + ' DAYS LEFT';
-  if (prestigeLabel) prestigeLabel.textContent = si.season > 0 ? si.season + '\u00d7 PRESTIGE' : '';
+  if (prestigeLabel) prestigeLabel.textContent = si.season > 0 ? si.season + '\u00d7 PRESTIGE' : ''; // \u00d7 = ×
 
   checkSeasonReset();
   checkEvo();
