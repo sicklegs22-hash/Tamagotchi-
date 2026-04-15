@@ -3464,7 +3464,7 @@ const CLASSES={
     ],
     secret:true,
     unlockHint:'Survive 60+ days with low discipline',
-    check:()=>getDayNum()>=60&&G.disc<30||(G.prestigeCount||0)>=1
+    check:()=>(getDayNum()>=60&&G.disc<30)||(G.prestigeCount||0)>=1
   },
   shadow_monarch:{
     name:'SHADOW MONARCH',icon:'👑',
@@ -3553,7 +3553,7 @@ function showSeasonResetOverlay(prestige,carryGold){
   overlay.innerHTML=`
     <div style="font-family:var(--kr);font-size:10px;color:var(--t3);letter-spacing:3px;margin-bottom:10px">계절 리셋</div>
     <div style="font-family:var(--ti);font-size:16px;letter-spacing:4px;color:var(--gd);margin-bottom:8px">SEASON ${prestige} BEGIN</div>
-    <div style="font-size:40px;margin:12px 0">👑</div>
+    <div style="font-size:40px;margin:12px 0">⚔️</div>
     <p style="font-family:var(--ui);font-size:13px;color:var(--t2);max-width:280px;line-height:1.6;margin-bottom:16px">
       90 days have passed. Your character resets — but the prestige remains.<br>
       <span style="color:var(--gd)">Prestige ${prestige}x — The journey restarts.</span><br>
