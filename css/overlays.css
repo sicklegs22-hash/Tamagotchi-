@@ -1,0 +1,110 @@
+/* ═══ OVERLAYS CSS ═══ */
+
+.overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 80;
+  background: rgba(5,5,16,0.97);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  padding: 24px 20px;
+  overflow-y: auto;
+  transform: translateY(100%);
+  transition: transform 0.3s ease;
+}
+
+.overlay.show {
+  transform: translateY(0);
+}
+
+/* Korean label */
+.overlay-kr {
+  font-family: 'Noto Sans KR', sans-serif;
+  font-size: 9px;
+  color: var(--t3);
+  letter-spacing: 3px;
+  margin-bottom: 8px;
+  text-align: center;
+}
+
+/* Overlay title */
+.overlay-title {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 14px;
+  letter-spacing: 4px;
+  color: var(--gl3);
+  margin-bottom: 12px;
+  text-align: center;
+}
+
+/* Overlay description */
+.overlay-desc {
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 12px;
+  color: var(--t2);
+  line-height: 1.6;
+  text-align: center;
+  max-width: 300px;
+  margin-bottom: 12px;
+}
+
+/* Overlay buttons */
+.overlay-buttons {
+  display: flex;
+  gap: 10px;
+  margin-top: 8px;
+  width: 100%;
+  justify-content: center;
+}
+
+.overlay-btn {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 8px;
+  letter-spacing: 3px;
+  padding: 12px 28px;
+  background: none;
+  color: var(--gl3);
+  border: 1px solid var(--gl2);
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s;
+  text-transform: uppercase;
+}
+
+.overlay-btn:hover {
+  background: rgba(58,143,255,0.15);
+  color: var(--w);
+  border-color: var(--gl3);
+}
+
+.overlay-btn-cancel {
+  color: var(--t3);
+  border-color: var(--t3);
+}
+
+.overlay-btn-cancel:hover {
+  background: rgba(255,255,255,0.05);
+  color: var(--t);
+}
+
+/* Evolution canvas */
+#evoCanvas {
+  width: 168px;
+  height: 224px;
+  image-rendering: pixelated;
+  image-rendering: crisp-edges;
+  margin: 8px 0;
+  display: block;
+}
+
+/* Season overlay icon */
+.season-skull { font-size: 40px; margin: 12px 0; }
+
+/* Class info sections */
+.class-info-sections {
+  width: 100%;
+  max-width: 320px;
+  text-align: left;
+  margin-top: 8px;
+}

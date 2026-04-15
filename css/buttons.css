@@ -1,0 +1,80 @@
+/* ═══ BUTTONS CSS ═══ */
+
+.actions-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 4px;
+  padding: 6px 8px;
+  border-top: 1px solid rgba(58,143,255,0.1);
+}
+
+.action-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  padding: 7px 4px;
+  background: rgba(10,24,60,0.6);
+  border: 1px solid rgba(58,143,255,0.15);
+  border-radius: 3px;
+  cursor: pointer;
+  transition: background 0.15s, border-color 0.15s, transform 0.1s, box-shadow 0.15s;
+  min-height: 58px;
+  position: relative;
+  overflow: hidden;
+}
+
+.action-btn::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, rgba(58,143,255,0.05) 0%, transparent 60%);
+  opacity: 0;
+  transition: opacity 0.2s;
+}
+
+.action-btn:hover:not(:disabled) {
+  background: rgba(58,143,255,0.12);
+  border-color: rgba(58,143,255,0.4);
+  box-shadow: 0 0 8px rgba(58,143,255,0.2);
+}
+
+.action-btn:hover::before { opacity: 1; }
+
+.action-btn:active:not(:disabled) {
+  transform: scale(0.95);
+  background: rgba(58,143,255,0.18);
+}
+
+.action-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.btn-icon {
+  font-size: 16px;
+  line-height: 1;
+}
+
+.btn-name {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 7px;
+  letter-spacing: 1px;
+  color: var(--w);
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+.btn-hint {
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 8px;
+  color: var(--t3);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100%;
+}
+
+/* Cooldown state styling */
+.action-btn:disabled .btn-hint { color: var(--r); }
